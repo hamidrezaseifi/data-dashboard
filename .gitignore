@@ -23,8 +23,12 @@
 hs_err_pid*
 
 .idea
+*/.idea
 
 *.iml
 */*.iml
 
 *.exclude
+
+target
+*/target

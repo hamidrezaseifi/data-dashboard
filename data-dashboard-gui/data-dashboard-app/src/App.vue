@@ -29,6 +29,10 @@
 .clear{
   clear: both;
 }
+
+.clm-action a{
+  padding: 5px;
+}
 </style>
 
 <script>

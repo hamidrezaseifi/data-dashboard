@@ -242,7 +242,7 @@ public class NamedPreparedStatement extends PreparedStatementImpl {
                     returnParam = ((o == null) ? "NULL" : "'" + ((Long) o).toString() + "'");
                     break;
                 case OBJECT:
-                    returnParam = ((o == null) ? "NULL" : "'" + ((Long) o).toString() + "'");
+                    returnParam = ((o == null) ? "NULL" : "'" + o.toString() + "'");
                     break;
                 case SHORT:
                     returnParam = ((o == null) ? "NULL" : "'" + ((Short) o).toString() + "'");

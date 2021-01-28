@@ -53,7 +53,7 @@ import { D3PieChart } from 'vue-d3-charts';
 import { D3BarChart } from 'vue-d3-charts';
 import { D3LineChart } from 'vue-d3-charts';
 import { D3SlicesChart } from 'vue-d3-charts';
-import { krankenhausService } from '../../services/krankenhaus.service';
+import { krankenhausService } from '../../../services/krankenhaus.service';
 
 export default {
   components: {

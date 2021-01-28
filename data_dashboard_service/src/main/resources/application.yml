@@ -93,8 +93,8 @@ jpa:
   default:
     name: 'default'
     packages-to-scan:
-      - 'de.mediqon.generic.mqappservice.entities'
-      - 'de.mediqon.generic.mqappservice.dataconnection.entities'
+      - 'de.mediqon.generic.data_dashboard.entities'
+      - 'de.mediqon.generic.data_dashboard.dataconnection.entities'
     properties:
       hibernate:
         hbm2ddl:

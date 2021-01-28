@@ -20,12 +20,11 @@ public class StatementEntity extends BaseEntity {
     @Column(name = "is_distinct")
     protected Boolean isDistinct;
 
-    @Column(name = "status")
-    protected Integer status;
-
     @Column(name = "result_limit")
     private int resultLimit = -1;
 
+    @Column(name = "status")
+    protected Integer status;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
@@ -53,13 +52,9 @@ public class StatementEntity extends BaseEntity {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<StatementGroupByFieldEntity> groupByFields = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "statement_connections",
-            joinColumns = { @JoinColumn(name = "statement_id") },
-            inverseJoinColumns = { @JoinColumn(name = "connection_id") }
-    )
-    private List<ConnectionPropertiesEntity> connections = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn( name = "connection_id", referencedColumnName = "id", nullable=false)
+    private ConnectionPropertiesEntity connectionProperties;
 
 
     public String getName() {
@@ -146,20 +141,36 @@ public class StatementEntity extends BaseEntity {
         groupByFields.add(groupByFieldEntity);
     }
 
-    public List<ConnectionPropertiesEntity> getConnections() {
-        return connections;
+    public ConnectionPropertiesEntity getConnectionProperties() {
+        return connectionProperties;
+    }
+
+    public void setConnectionProperties(ConnectionPropertiesEntity connectionProperties) {
+        this.connectionProperties = connectionProperties;
+    }
+
+    public void setSelectFields(List<StatementSelectFieldEntity> selectFields) {
+        this.selectFields = selectFields;
+    }
+
+    public void setWhereFields(List<StatementWhereFieldEntity> whereFields) {
+        this.whereFields = whereFields;
+    }
+
+    public void setSortingFields(List<StatementSortingFieldEntity> sortingFields) {
+        this.sortingFields = sortingFields;
+    }
+
+    public void setHavingFields(List<StatementHavingFieldEntity> havingFields) {
+        this.havingFields = havingFields;
+    }
+
+    public void setGroupByFields(List<StatementGroupByFieldEntity> groupByFields) {
+        this.groupByFields = groupByFields;
     }
 
     public boolean hasConnection() {
-        return connections != null && connections.size() > 0;
-    }
-
-    public void addConnection(ConnectionPropertiesEntity connectionProperties) {
-        connections.add(connectionProperties);
-    }
-
-    public void setConnections(List<ConnectionPropertiesEntity> connections) {
-        this.connections = connections;
+        return connectionProperties != null;
     }
 
     public int getResultLimit() {

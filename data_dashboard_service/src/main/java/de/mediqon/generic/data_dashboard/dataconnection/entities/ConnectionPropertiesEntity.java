@@ -16,8 +16,20 @@ import java.util.Set;
 @Table(name = "connection_properties")
 public class ConnectionPropertiesEntity extends BaseEntity {
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "server")
+    private String server;
+
+    @Column(name = "port")
+    private int port;
+
+    @Column(name = "database_name")
+    private String databaseName;
+
+    @Column(name = "database_type")
+    private int databaseType;
 
     @Column(name = "username")
     private String username;
@@ -34,19 +46,52 @@ public class ConnectionPropertiesEntity extends BaseEntity {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
 
-    @ManyToMany(mappedBy = "connections")
-    private Set<StatementEntity> statements = new HashSet<>();
+    //@OneToMany(mappedBy = "connections")
+    //private StatementEntity statements;
 
     public ConnectionPropertiesEntity() {
 
     }
 
-    public String getUrl() {
-        return url;
+
+    public String getName() {
+        return name;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getServer() {
+        return server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public int getDatabaseType() {
+        return databaseType;
+    }
+
+    public void setDatabaseType(int databaseType) {
+        this.databaseType = databaseType;
     }
 
     public String getUsername() {
@@ -81,22 +126,11 @@ public class ConnectionPropertiesEntity extends BaseEntity {
         return updatedAt;
     }
 
-    public Set<StatementEntity> getStatements() {
+    /*public StatementEntity getStatements() {
         return statements;
     }
 
-    public void setStatements(Set<StatementEntity> statements) {
+    public void setStatements(StatementEntity statements) {
         this.statements = statements;
-    }
-
-    public Connection generateConnection() throws SQLException {
-
-        Properties props = new Properties();
-        props.setProperty("user",username);
-        props.setProperty("password", password);
-        //props.setProperty("ssl","true");
-        Connection conn = DriverManager.getConnection(url, props);
-
-        return conn;
-    }
+    }*/
 }

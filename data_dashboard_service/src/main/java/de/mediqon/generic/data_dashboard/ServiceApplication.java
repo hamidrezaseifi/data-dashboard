@@ -14,59 +14,70 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Singleton
-public class MqAppServiceApplication implements ApplicationEventListener {
+public class ServiceApplication implements ApplicationEventListener {
 
     private final IConnectionPropertiesRepository connectionPropertiesRepository;
     private final IStatementRepository statementRepository;
 
-    public MqAppServiceApplication(IConnectionPropertiesRepository connectionPropertiesRepository,
-                                   IStatementRepository statementRepository) {
+    public ServiceApplication(IConnectionPropertiesRepository connectionPropertiesRepository,
+                              IStatementRepository statementRepository) {
         this.connectionPropertiesRepository = connectionPropertiesRepository;
         this.statementRepository = statementRepository;
     }
 
     public static void main(String[] args) {
-        Micronaut.run(MqAppServiceApplication.class);
+        Micronaut.run(ServiceApplication.class);
     }
 
     @Override
     public void onApplicationEvent(Object event) {
-        /*UUID statementId = createStatement();
-        addConnection(statementId);
-        addSelectFields(statementId);
-        addGroupByFields(statementId);
-        addHavingFields(statementId);*/
+        /*ConnectionPropertiesEntity connectionPropertiesEntity = createConnection();
+        UUID statementId = createStatement(connectionPropertiesEntity);*/
+
     }
 
-    private void createConnection(){
+    private ConnectionPropertiesEntity createConnection(){
         ConnectionPropertiesEntity connectionPropertiesEntity = new ConnectionPropertiesEntity();
-        connectionPropertiesEntity.setUrl("jdbc:postgresql://mq-db02.mediqon.local:5433/mq_pg_krankenhaus_norm");
+        //connectionPropertiesEntity.setUrl("jdbc:postgresql://mq-db02.mediqon.local:5433/mq_pg_krankenhaus_norm");
+        connectionPropertiesEntity.setName("Krankenhaus Norm");
+        connectionPropertiesEntity.setDatabaseName("mq_pg_krankenhaus_norm");
+        connectionPropertiesEntity.setDatabaseType(3);
+        connectionPropertiesEntity.setServer("mq-db02.mediqon.local");
+        connectionPropertiesEntity.setPort(5433);
         connectionPropertiesEntity.setUsername("tableau_read");
         connectionPropertiesEntity.setPassword("tableau_read");
         connectionPropertiesEntity.setStatus(1);
         connectionPropertiesRepository.create(connectionPropertiesEntity);
+        return connectionPropertiesRepository.getById(connectionPropertiesEntity.getId()).get();
     }
 
-    private UUID createStatement(){
+    private UUID createStatement(ConnectionPropertiesEntity connectionPropertiesEntity){
         StatementEntity statement = new StatementEntity();
-        statement.setName("Fachabteilung-Liste");
-        statement.setTableName("fact_qb_icd");
+        statement.setName("Krankenhause-Liste");
+        statement.setTableName("qb_kh_stamm");
         statement.setDistinct(true);
         statement.setStatus(1);
+        statement.setConnectionProperties(connectionPropertiesEntity);
+
+        StatementSelectFieldEntity selectFieldEntity = new StatementSelectFieldEntity();
+        selectFieldEntity.setFieldLabel("");
+        selectFieldEntity.setFieldTypeEnum(EFieldType.VARCHAR);
+        selectFieldEntity.setFieldName("kh_key");
+        selectFieldEntity.setStatus(1);
+
+        statement.addSelectField(selectFieldEntity);
+
+        selectFieldEntity = new StatementSelectFieldEntity();
+        selectFieldEntity.setFieldLabel("");
+        selectFieldEntity.setFieldTypeEnum(EFieldType.VARCHAR);
+        selectFieldEntity.setFieldName("krankenhaus_name");
+        selectFieldEntity.setStatus(1);
+
+        statement.addSelectField(selectFieldEntity);
+
         statementRepository.create(statement);
 
         return statement.getId();
-    }
-
-    private void addConnection(UUID statementId){
-        Optional<ConnectionPropertiesEntity> connectionPropertiesEntityOptional =
-                connectionPropertiesRepository.getById(UUID.fromString("58362d83-9d3f-4d8f-a40f-360632d30f11"));
-        ConnectionPropertiesEntity connectionProperties = connectionPropertiesEntityOptional.get();
-
-        Optional<StatementEntity> StatementEntityOptional = statementRepository.getById(statementId);
-        StatementEntity statement = StatementEntityOptional.get();
-        statement.addConnection(connectionProperties);
-        statementRepository.update(statement);
     }
 
     private void addSelectFields(UUID statementId){
@@ -89,13 +100,13 @@ public class MqAppServiceApplication implements ApplicationEventListener {
 
         statement.addSelectField(selectFieldEntity);
 
-        selectFieldEntity = new StatementSelectFieldEntity();
+        /*selectFieldEntity = new StatementSelectFieldEntity();
         selectFieldEntity.setFieldLabel("fallzahl");
         selectFieldEntity.setFieldTypeEnum(EFieldType.INT);
         selectFieldEntity.setFieldName("sum(fallzahl)");
         selectFieldEntity.setStatus(1);
 
-        statement.addSelectField(selectFieldEntity);
+        statement.addSelectField(selectFieldEntity);*/
 
         statementRepository.update(statement);
     }

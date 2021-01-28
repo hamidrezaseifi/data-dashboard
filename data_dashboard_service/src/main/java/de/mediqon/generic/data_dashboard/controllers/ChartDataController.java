@@ -1,8 +1,12 @@
 package de.mediqon.generic.data_dashboard.controllers;
 
+import de.mediqon.generic.data_dashboard.adapters.IStatementAdapter;
 import de.mediqon.generic.data_dashboard.dataconnection.StatementExecuter;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.ConnectionPropertiesEntity;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.StatementEntity;
+import de.mediqon.generic.data_dashboard.dataconnection.enums.EDatabaseType;
+import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.StatementDto;
 import de.mediqon.generic.data_dashboard.repositories.IStatementRepository;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -21,15 +25,22 @@ public class ChartDataController {
 
     private List<Map<String, Object>> krankenhaus = null;
 
-    private ConnectionPropertiesEntity krankenhausNormConnectionProperties = null;
+    private ConnectionPropertiesDto krankenhausNormConnectionProperties = null;
 
     private final IStatementRepository statementRepository;
+    private final IStatementAdapter statementAdapter;
 
-    public ChartDataController(IStatementRepository statementRepository) {
+    public ChartDataController(IStatementRepository statementRepository,
+                               IStatementAdapter statementAdapter) {
         this.statementRepository = statementRepository;
+        this.statementAdapter = statementAdapter;
 
-        krankenhausNormConnectionProperties = new ConnectionPropertiesEntity();
-        krankenhausNormConnectionProperties.setUrl("jdbc:postgresql://mq-db02.mediqon.local:5433/mq_pg_krankenhaus_norm");
+        krankenhausNormConnectionProperties = new ConnectionPropertiesDto();
+        //krankenhausNormConnectionProperties.setUrl("jdbc:postgresql://mq-db02.mediqon.local:5433/mq_pg_krankenhaus_norm");
+        krankenhausNormConnectionProperties.setDatabaseName("mq_pg_krankenhaus_norm");
+        krankenhausNormConnectionProperties.setDatabaseType(EDatabaseType.POSTGRESQL);
+        krankenhausNormConnectionProperties.setServer("mq-db02.mediqon.local");
+        krankenhausNormConnectionProperties.setPort(5433);
         krankenhausNormConnectionProperties.setUsername("tableau_read");
         krankenhausNormConnectionProperties.setPassword("tableau_read");
     }
@@ -42,8 +53,9 @@ public class ChartDataController {
 
             Optional<StatementEntity> statementEntityOptional = statementRepository.getByName("Krankenhause-Liste");
             if(statementEntityOptional.isPresent()){
-                StatementExecuter statementExecuter =
-                        new StatementExecuter(statementEntityOptional.get());
+                StatementDto statementDto =
+                        statementAdapter.toDto(statementEntityOptional.get());
+                StatementExecuter statementExecuter = new StatementExecuter(statementDto);
 
                 krankenhaus = statementExecuter.execute();
             }
@@ -67,7 +79,9 @@ public class ChartDataController {
         List<Map<String, Object>> results = null;
         Optional<StatementEntity> statementEntityOptional = statementRepository.getByName("Fachabteilung-Liste");
         if(statementEntityOptional.isPresent()){
-            StatementExecuter statementExecuter = new StatementExecuter(statementEntityOptional.get());
+            StatementDto statementDto =
+                    statementAdapter.toDto(statementEntityOptional.get());
+            StatementExecuter statementExecuter = new StatementExecuter(statementDto);
 
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("kh_key", khKey);

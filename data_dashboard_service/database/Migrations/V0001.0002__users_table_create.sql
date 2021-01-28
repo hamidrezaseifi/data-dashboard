@@ -20,7 +20,7 @@ CREATE TABLE public.users (
 
 -- public.users foreign keys
 
-ALTER TABLE public.users ADD CONSTRAINT fk_users_customers FOREIGN KEY (customers_id) REFERENCES customers(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.users ADD CONSTRAINT fk_users_customers FOREIGN KEY (customer_id) REFERENCES customers(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 INSERT INTO public.users
 (id, customer_id, username, password_hash, password_salt, email, birthdate, firstname, lastname, "permission", status, "version", created_at, updated_at)

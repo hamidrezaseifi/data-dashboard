@@ -2,17 +2,16 @@ package de.mediqon.generic.data_dashboard.dataconnection;
 
 import de.mediqon.generic.data_dashboard.dataconnection.entities.*;
 import de.mediqon.generic.data_dashboard.dataconnection.helper.NamedPreparedStatement;
+import de.mediqon.generic.data_dashboard.models.dto.data.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class StatementExecuter {
 
-    private StatementEntity statementEntity = null;
-    private ConnectionPropertiesEntity connectionPropertiesEntity = null;
+    private StatementDto statementDto = null;
+    private ConnectionPropertiesDto connectionProperties = null;
 
 
     private String sql = null;
@@ -24,23 +23,23 @@ public class StatementExecuter {
         this.sql = sql;
     }
 
-    public StatementExecuter(ConnectionPropertiesEntity connectionPropertiesEntity,
+    public StatementExecuter(ConnectionPropertiesDto connectionProperties,
                              String sql) {
-        this.connectionPropertiesEntity = connectionPropertiesEntity;
+        this.connectionProperties = connectionProperties;
         this.sql = sql;
     }
 
-    public StatementExecuter(StatementEntity statementEntity) {
-        this.statementEntity = statementEntity;
+    public StatementExecuter(StatementDto statementDto) {
+        this.statementDto = statementDto;
     }
 
     public String getSql() {
-        if(statementEntity != null){
+        if(statementDto != null){
             sql = "select ";
-            if(statementEntity.getDistinct()){
+            if(statementDto.getDistinct()){
                 sql += "distinct ";
             }
-            for(StatementSelectFieldEntity fld: statementEntity.getSelectFields()){
+            for(StatementSelectFieldDto fld: statementDto.getSelectFields()){
                 sql += fld.getLabeledFieldName() + ", ";
             }
 
@@ -48,22 +47,27 @@ public class StatementExecuter {
             if(sql.endsWith(", ")){
                 sql = sql.substring(0, sql.length() - 2);
             }
-            sql += " from " + statementEntity.getTableName();
-            if(statementEntity.getGroupByFields().isEmpty() == false){
+            sql += " from " + statementDto.getTableName();
+            if(statementDto.getGroupByFields().isEmpty() == false){
                 sql += " group by  ";
-                for(StatementGroupByFieldEntity fld: statementEntity.getGroupByFields()){
+                for(StatementGroupByFieldDto fld: statementDto.getGroupByFields()){
                     sql += fld.getFieldName() + ", ";
                 }
                 sql = removeLastComa(sql);
             }
-            if(statementEntity.getHavingFields().isEmpty() == false){
+            if(statementDto.getHavingFields().isEmpty() == false){
                 sql += " having  ";
-                for(StatementHavingFieldEntity fld: statementEntity.getHavingFields()){
+                for(StatementHavingFieldDto fld: statementDto.getHavingFields()){
                     sql += fld.getFieldName() + "=:" + fld.getFieldName() +  ", ";
                 }
                 sql = removeLastComa(sql);
             }
         }
+
+        if(statementDto.getResultLimit() > 0){
+            sql += "limit " + statementDto.getResultLimit();
+        }
+
         return sql;
     }
 
@@ -71,12 +75,12 @@ public class StatementExecuter {
         this.sql = sql;
     }
 
-    public ConnectionPropertiesEntity getConnectionPropertiesEntity() {
-        return connectionPropertiesEntity;
+    public ConnectionPropertiesDto getConnectionProperties() {
+        return connectionProperties;
     }
 
-    public void setConnectionPropertiesEntity(ConnectionPropertiesEntity connectionPropertiesEntity) {
-        this.connectionPropertiesEntity = connectionPropertiesEntity;
+    public void setConnectionProperties(ConnectionPropertiesDto connectionProperties) {
+        this.connectionProperties = connectionProperties;
     }
     public List<Map<String, Object>> execute() throws SQLException {
         return execute(new HashMap<>());
@@ -119,11 +123,13 @@ public class StatementExecuter {
     }
 
     private Connection getConnection() throws SQLException {
-        if(statementEntity != null && statementEntity.hasConnection()){
-            return statementEntity.getConnections().get(0).generateConnection();
+        ConnectionPropertiesDto currentConnectionProperties = connectionProperties;
+        if(statementDto != null && statementDto.hasConnection()){
+            currentConnectionProperties = statementDto.getConnectionProperties();
         }
-        return connectionPropertiesEntity.generateConnection();
+        return currentConnectionProperties.generateConnection();
     }
+
 
     private String removeLastComa(String text){
         if(text.endsWith(", ")){

@@ -2,12 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from '../views/auth/Dashboard.vue'
 import About from '../views/auth/About.vue'
-import TestChart from '../views/auth/TestChart.vue'
 import LoginPage from '../views/noauth/LoginPage.vue'
 import CustomerList from '../views/auth/customer/CustomerList.vue'
 import EditCustomer from '../views/auth/customer/EditCustomer.vue'
-import KrankenhausChart from '../views/auth/KrankenhausChart.vue'
-
+import KrankenhausChart from '../views/auth/data/KrankenhausChart.vue'
+import TestChart from '../views/auth/data/TestChart.vue'
+import DataSourceSettings from '../views/auth/data/settings/DataSourceSettings.vue'
+import DataSourceEdit from '../views/auth/data/settings/DataSourceEdit.vue'
 
 Vue.use(VueRouter)
 
@@ -18,14 +19,36 @@ const routes = [
     component: Dashboard
   },
   {
-    path: '/test',
+    path: '/data/testchart',
     name: 'TestChart',
     component: TestChart
   },
   {
-    path: '/krankenhaus',
+    path: '/data/krankenhaus',
     name: 'KrankenhausChart',
     component: KrankenhausChart
+  },
+  {
+    path: '/data/settings/connections',
+    name: 'DataSourceSettings',
+    component: DataSourceSettings
+  },
+  {
+    path: '/data/settings/connections/edit/:id',
+    name: 'DataSourceEdit',
+    component: DataSourceEdit,
+    props: { clone: false }
+  },
+  {
+    path: '/data/settings/connections/clone/:id',
+    name: 'DataSourceEdit',
+    component: DataSourceEdit,
+    props: { clone: true }
+  },
+  {
+    path: '/data/settings/connections/new',
+    name: 'DataSourceEdit',
+    component: DataSourceEdit
   },
   {
     path: '/about',

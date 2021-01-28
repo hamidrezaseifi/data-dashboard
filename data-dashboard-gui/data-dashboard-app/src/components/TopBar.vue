@@ -1,12 +1,21 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light m-navbar">
-    <router-link class="navbar-brand" to="/">Mediqon Produktion ...</router-link>
+    <router-link class="navbar-brand" to="/">Data Portal ...</router-link>
 
     <div v-if="isLoggedIn" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav menu-nvabar">
         <li class="nav-item" v-bind:class="{ active: isActive('/') }"><router-link class="nav-link" to="/">Dashboard</router-link></li>
-        <li class="nav-item" v-bind:class="{ active: isActive('/test') }"><router-link class="nav-link" to="/test">TestChart</router-link></li>
-        <li class="nav-item" v-bind:class="{ active: isActive('/krankenhaus') }"><router-link class="nav-link" to="/krankenhaus">KrankenhausChart</router-link></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownData" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Daten Einstellungen
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownData">
+            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/testchart') }" to="/data/testchart">TestChart</router-link >
+            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/krankenhaus') }" to="/data/krankenhaus">KrankenhausChart</router-link>
+            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/settings/connections') }" to="/data/settings/connections">Datenquelle-Verbindung</router-link>
+
+          </div>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdowncustomer" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Kunde
@@ -58,6 +67,7 @@
 }
   .navbar-brand{
     margin-right: 30px;
+    width: 300px;
   }
 
   .user-box{
@@ -86,9 +96,18 @@
     margin-top: 5px;
   }
 
-  ul.navbar-nav.menu-nvabar {
-      margin-right: calc(100% - 800px);
+  #navbarSupportedContent{
+    width: calc(100% - 300px);
   }
+  ul.navbar-nav.menu-nvabar {
+      width: calc(100% - 250px);
+
+  }
+
+  ul.navbar-nav user-box{
+    width: 230px;
+  }
+
 
   .arrow {
     border: solid black;

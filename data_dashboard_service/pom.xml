@@ -180,7 +180,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>de.mediqon.generic.data-dashboard</groupId>
+            <groupId>de.mediqon.generic.data_dashboard</groupId>
             <artifactId>data_dashboard_common</artifactId>
             <version>0.1</version>
             <scope>compile</scope>
