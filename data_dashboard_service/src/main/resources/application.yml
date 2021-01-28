@@ -1,0 +1,141 @@
+micronaut:
+  application:
+    name: test
+  server:
+    port: 4200
+    max-request-size: 100MB
+    max-file-size: 100MB
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  cors:
+    enabled: true
+    single-header: true
+    configurations:
+      web:
+        allowCredentials: true
+        allowedHeaders:
+          - Origin
+          - Host
+          - Authorization
+          - Content-Type
+          - Accept
+          - X-PINGOTHER
+          - Set-Cookie
+          - Pragma
+          - Cache-Control
+          - Content-disposition
+        allowedOrigins:
+          - ${iflow.gui.cli-server}
+        allowedMethods:
+          - OPTIONS
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        exposedHeaders:
+          - Access-Control-Allow-Origin
+          - Access-Control-Allow-Headers
+          - Access-Control-Request-Method
+          - Access-Control-Request-Headers
+          - Origin
+          - Cache-Control
+          - Content-Type
+          - Authorization
+          - Set-Cookie
+          - myxyz
+  security:
+    enabled: true
+    #authentication: bearer
+    authentication: session
+    redirect:
+      login-success: /users/data/sessiondata
+      login-failure: /auth/authFailed
+    endpoints:
+      login:
+        enabled: true
+        path: /api001/profile001/authentication/login
+      logout:
+        enabled: true
+        path: /api001/profile001/authentication/logout
+      oauth:
+        enabled: true
+        path: /api001/profile001/authentication/refreshToken
+    token:
+      jwt:
+        #enabled: true
+        generator:
+          access-token-expiration: 7200
+          refresh-token-expiration: 172800
+        signatures:
+          secret:
+            generator:
+              jws-algorithm: HS256
+              secret: ${JWT_GENERATOR_SECRET:pleaseChangeThisSecretForANewOne}
+    session:
+      enabled: true
+      login-success-target-url: /users/data/sessiondata
+      login-failure-target-url: /auth/authFailed
+
+  extensions:
+    project: profile
+    securities:
+      passwordpepper: passwordpepper
+
+  session:
+    http:
+      cookie-path: /
+      cookie-name: iflow
+
+
+jpa:
+  default:
+    name: 'default'
+    packages-to-scan:
+      - 'de.mediqon.generic.mqappservice.entities'
+      - 'de.mediqon.generic.mqappservice.dataconnection.entities'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        show_sql: true
+        format_sql: true
+  h2:
+    name: 'h2'
+    packages-to-scan:
+      - 'de.mediqon.generic.mqappservice.entities'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
+        show_sql: true
+        format_sql: true
+
+datasources:
+  default:
+    name: 'default'
+    url: ${JDBC_URL:`jdbc:postgresql://localhost:5432/mq_app`}?ApplicationName=mq-app-pool
+    driverClassName: ${JDBC_DRIVER:org.postgresql.Driver}
+    username: ${JDBC_USER:mq_app_user}
+    password: ${JDBC_PASSWORD:mq_app_user}
+    pool-name: mq-app-pool
+  h2:
+    name: 'h2'
+    schema-generate: CREATE_DROP
+    dialect: H2
+    url: ${JDBC_URL:`jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL`}
+    driverClassName: ${JDBC_DRIVER:org.h2.Driver}
+    username: ${JDBC_USER:sa}
+    password: ${JDBC_PASSWORD:""}
+    pool-name: mq-app-authentication-pool
+
+mq-app-service:
+  authentication: db
+  task:
+    deletedcases-detection:
+      delay: 400s
+  ldap:
+    domain-name: mediqon.local
+    base: dc=mediqon,dc=local
+    url: ldap://mediqon.local:389
