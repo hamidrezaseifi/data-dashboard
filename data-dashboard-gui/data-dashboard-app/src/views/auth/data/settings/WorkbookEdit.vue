@@ -5,41 +5,67 @@
       <div class="card-header">
 
         <b>New Workbook</b>
-        <button type="button" class="btn" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/plus-circle.svg" width="20" /></button>
+        <button type="button" class="btn" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/database_add.png" width="20" /></button>
         <router-link class="" to="/data/settings/connections"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
       </div>
       <div class="card-body">
 
         <form id="newconnectionform" @submit.prevent="handleSaveData">
-          <div>
-              <div class="card workbook-item" v-for="item in workbookDataSourceList" :key="item.table">
-                  <div class="card-header">
-                      <span><b>{{item.connection.name}}</b></span>
-                      <br>
-                      <span>{{item.table}}</span>
-                      <button type="button" class="close" aria-label="Close" v-on:click="removeWorkbookItem(item)">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="card-body">
-                      <ul  class="list-group">
-                          <li class="list-group-item" v-for="column in item.columns" :key="column.name" >
 
-                              <span style="margin-left: 9px;">{{ getColumnLabel(column)}}</span>
-                          </li>
-                      </ul >
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="datasourcestab" data-toggle="tab" href="#datasourcestabcontent" role="tab" aria-controls="home" aria-selected="true">Datenquelle</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="columnstab" data-toggle="tab" href="#columnstabcontent" role="tab" aria-controls="profile" aria-selected="false">Spalten</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="presentationtab" data-toggle="tab" href="#presentationtabcontent" role="tab" aria-controls="profile" aria-selected="false">Präsentation</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="finaltab" data-toggle="tab" href="#profile" role="tab" aria-controls="finaltabcontent" aria-selected="false">Finalisieren</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active tabs-content" id="datasourcestabcontent" role="tabpanel" aria-labelledby="datasourcestab">
+                  <div class="card workbook-item" v-for="item in workbookDataSourceList" :key="item.table">
+                      <div class="card-header">
+                          <span><b>{{item.connection.name}}</b></span>
+                          <br>
+                          <span>{{item.table}}</span>
+                          <button type="button" class="close" aria-label="Close" v-on:click="removeWorkbookItem(item)">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="card-body">
+                          <ul  class="list-group">
+                              <li class="list-group-item" v-for="column in item.columns" :key="column.name" >
 
+                                  <span style="margin-left: 9px;">{{ getColumnLabel(column)}}</span>
+                              </li>
+                          </ul >
+
+                      </div>
                   </div>
+                  <div class="clear"></div>
+
               </div>
+              <div class="tab-pane fade tabs-content" id="columnstabcontent" role="tabpanel" aria-labelledby="columnstab">
 
+              </div>
+              <div class="tab-pane fade tabs-content" id="presentationtabcontent" role="tabpanel" aria-labelledby="presentationtab">
+
+              </div>
+              <div class="tab-pane fade tabs-content" id="finaltabcontent" role="tabpanel" aria-labelledby="finaltab">
+
+              </div>
           </div>
-          <div class="form-group">
+
+          <div class="form-group" style="margin-top: 10px;">
             <span v-if="errmessage != ''" class="alert alert-danger" style="float:left; max-width: calc(100% - 300px);" v-html="errmessage"></span>
             <span v-if="okmessage != ''" class="alert alert-success" style="float:left; max-width: calc(100% - 300px);" v-html="okmessage"></span>
-
-            <button type="button" class="btn btn-secondary actionbutton" v-on:click="testConnection" style="float:right;">Test</button>
-
             <button type="submit" class="btn btn-primary actionbutton" style="float:right;">{{saveButtonName}}</button>
+            <button type="button" class="btn btn-secondary actionbutton" v-on:click="testConnection" style="float:right;">Test</button>
           </div>
         </form>
 
@@ -220,10 +246,18 @@ label.item-title2{
     padding: 0;
 }
 
+.tabs-content{
+    min-height: calc(100vh - 310px);
+    max-height: calc(100vh - 310px);
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 10px;
+}
 </style>
 <script>
 import { dataSettingsService } from '../../../../services/datasettings.service';
 import router from '../../../../router'
+import $ from 'jquery'
 
 export default {
     name: 'NewConnection',
@@ -403,6 +437,9 @@ export default {
         this.workbookDataSourceList.push(item)
         this.isSelectSourceDialogVisible = false
         this.currentUpdateDateTime = new Date()
+
+        $('#datasourcestab').tab('show')
+
       },
       getColumnLabel(item){
         return item.name + " : " + item.type + "(" + item.size + ")"
