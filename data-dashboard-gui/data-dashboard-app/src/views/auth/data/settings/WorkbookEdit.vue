@@ -5,45 +5,34 @@
       <div class="card-header">
 
         <b>New Workbook</b>
-        <button type="button" class="btn" v-on:click="reloadData"><img src="@/assets/images/refresh.svg" width="20" /></button>
+        <button type="button" class="btn" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/plus-circle.svg" width="20" /></button>
         <router-link class="" to="/data/settings/connections"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
       </div>
       <div class="card-body">
+
         <form id="newconnectionform" @submit.prevent="handleSaveData">
-          <div class="form-group">
-            <label for="connectionlist" class="item-title">Verbindung-Liste</label>
-            <select class="form-control" id="connectionlist" @change="onConnectionChange($event)" v-model="selectedConnectionId" name="selectedConnectionId">
-              <option v-for="item in connectionList" :key="item.id" v-bind:value="item.id" >{{item.name}}</option>
-            </select>
-          </div>
-          <div class="card">
-            <div class="card sub-item">
-              <div class="form-group">
-                <label class="item-title">Tabelle-Liste</label>
-                <input class="form-control" id="keyfilterTableText" placeholder="" v-model="filterTableText">
-                <div style="height: 300px; overflow: auto; padding: 6px; ">
-                  <div class="list-group">
-                    <button type="button" class="list-group-item list-group-item-action" v-on:click="selectedTable=item" v-for="item in filterTableList" :key="item" >{{item}}</button>
+          <div>
+              <div class="card workbook-item" v-for="item in workbookDataSourceList" :key="item.table">
+                  <div class="card-header">
+                      <span><b>{{item.connection.name}}</b></span>
+                      <br>
+                      <span>{{item.table}}</span>
+                      <button type="button" class="close" aria-label="Close" v-on:click="removeWorkbookItem(item)">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
                   </div>
-                </div>
+                  <div class="card-body">
+                      <ul  class="list-group">
+                          <li class="list-group-item" v-for="column in item.columns" :key="column.name" >
+
+                              <span style="margin-left: 9px;">{{ getColumnLabel(column)}}</span>
+                          </li>
+                      </ul >
+
+                  </div>
               </div>
 
-            </div>
-            <div class="card sub-item">
-              <div class="form-group">
-                <label class="item-title">Tabelle-Liste</label>
-                <input class="form-control" id="keyfiltercolumnText" placeholder="" v-model="filterTableText">
-                <div style="height: 300px; overflow: auto; padding: 6px; ">
-                  <div class="list-group">
-                    <button type="button" class="list-group-item list-group-item-action" v-on:click="selectedColumn=item" v-for="item in filterColumnList" :key="item" >{{item}}</button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
           </div>
-
           <div class="form-group">
             <span v-if="errmessage != ''" class="alert alert-danger" style="float:left; max-width: calc(100% - 300px);" v-html="errmessage"></span>
             <span v-if="okmessage != ''" class="alert alert-success" style="float:left; max-width: calc(100% - 300px);" v-html="okmessage"></span>
@@ -56,7 +45,67 @@
 
       </div>
     </div>
-    {{selectedTable}}
+
+    <div class="modal fade " id="datasourceDialog" v-bind:class="{ show: isSelectSourceDialogVisible }" v-if="isSelectSourceDialogVisible" style="display: block;"
+         tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="width: 820px; max-width: 820px;">
+        <div class="modal-content" style="height: calc(100vh - 200px);">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Datenquelle außwählen ..</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="isSelectSourceDialogVisible=false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label for="connectionlist" class="item-title">Verbindung-Liste</label>
+                <select class="form-control" id="connectionlist" @change="onConnectionChange($event)" v-model="selectedConnectionId" name="selectedConnectionId">
+                  <option v-for="item in connectionList" :key="item.id" v-bind:value="item.id" >{{item.name}}</option>
+                </select>
+              </div>
+              <div class="sub-item-container" >
+                <div class="sub-item">
+
+                    <label class="top">Tabelle-Liste</label>
+                    <input class="search" id="keyfilterTableText" placeholder="" v-model="filterTableText">
+                    <div  class="sub-item-list">
+                      <div class="list-group">
+                        <button type="button" class="list-group-item list-group-item-action" v-on:click="loadTableColumns(item)" v-for="item in filterTableList" :key="item" >{{item}}</button>
+                      </div>
+                    </div>
+
+
+                </div>
+                <div class="sub-item">
+
+                    <label class="top">Spalten-Liste</label>
+                    <input class="search" id="keyfiltercolumnText" placeholder="" v-model="filterColumnText">
+                    <label class="top">Alle</label>
+                    <input class="search-checkall" type="checkbox" v-on:click="selectAllColumns($event)">
+                    <div class="sub-item-list">
+                      <ul  class="list-group">
+                        <li class="list-group-item" v-for="item in filterColumnList" :key="item.name" >
+                          <input type="checkbox" :checked="item.selected" v-on:click="item.selected = !item.selected; currentUpdateDateTime = new Date()" >
+                          <span style="margin-left: 9px;">{{ getColumnLabel(item)}}</span>
+                        </li>
+                      </ul >
+                    </div>
+
+
+                </div>
+                <div class="clear"></div>
+
+              </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" v-on:click="addSelectedColumns" :disabled="isAddDataSourceDisabled" class="btn btn-primary">Anwenden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -101,11 +150,74 @@ label.item-title2{
   width: 270px;
 }
 
-.card.sub-item{
-  float: left;
-  width: 400px;
+.sub-item-container{
   margin: 10px 10px;
   padding: 10px;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 5px;
+  height: calc(100% - 60px);
+}
+
+.sub-item{
+  float: left;
+  width: 350px;
+  margin: 10px 10px;
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 5px;
+  font-size: 14px;
+  height: calc(100% - 20px);
+}
+
+.sub-item-list{
+  height: calc(100% - 50px);
+  overflow: auto;
+  padding: 6px;
+      margin-top: 5px;
+}
+
+.sub-item input.search{
+  padding: 3px;
+  font-size: 12px;
+  width: 150px;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  margin-right: 10px;
+}
+
+.sub-item label.top{
+  margin-right: 5px;
+}
+
+.sub-item input.search-checkall{
+
+  margin-left: 10px;
+}
+
+
+
+#datasourceDialog .modal-body{
+  height: calc(100vh - 350px);
+}
+
+#datasourceDialog .modal-footer{
+    background: #4976b94a;
+    color: #f7f7e5;
+}
+
+.workbook-item {
+    width: 400px;
+    max-height: 400px;
+    height: 400px;
+    float: left;
+    margin: 5px;
+}
+
+.workbook-item .card-body {
+    height: 300px;
+    max-height: 300px;
+    overflow: auto;
+    padding: 0;
 }
 
 </style>
@@ -121,10 +233,15 @@ export default {
           selectedTable: false,
           connectionList:[],
           tableList:[],
+          columnList:[],
           filterTableText: "",
+          filterColumnText: "",
           errmessage: "",
           okmessage: "",
-          id: false
+          id: false,
+          isSelectSourceDialogVisible: false,
+          currentUpdateDateTime: new Date(),
+          workbookDataSourceList: []
         }
     },
     props:["inBox", "clone"],
@@ -133,10 +250,21 @@ export default {
         return this.isNew() ? "Erstellen" : "Speiren"
       },
       filterTableList: function (){
-        var vm = this
-        console.log("filter" , vm.filterTableText)
-        console.log("includes" , "beh_drg_union_dezile_beh_kap".includes(vm.filterTableText))
+        this.currentUpdateDateTime
         return this.filterTableText == "" ? this.tableList : this.tableList.filter(item => item.includes(this.filterTableText))
+      },
+      filterColumnList: function (){
+        this.currentUpdateDateTime
+        return this.filterColumnText == "" ? this.columnList : this.columnList.filter(item => item.name.includes(this.filterColumnText))
+      },
+      selectedColumnList: function (){
+        this.currentUpdateDateTime
+        return this.filterColumnList.filter(item => item.selected)
+      },
+      isAddDataSourceDisabled: function (){
+        this.currentUpdateDateTime
+        console.log("selectedColumnList", this.selectedColumnList)
+        return this.selectedColumnList.length == 0
       }
     },
     methods: {
@@ -148,6 +276,8 @@ export default {
               return Promise.reject(error);
             }
 
+            this.columnList = []
+            this.tableList = []
             this.connectionList = data;
 
             }).catch(error => {
@@ -163,7 +293,26 @@ export default {
               return Promise.reject(error);
             }
 
+            this.columnList = []
             this.tableList = data
+
+          }).catch(error => {
+            console.error("There was an error!", error);
+          })
+      },
+      loadTableColumns(tableName){
+          this.selectedTable = tableName
+          dataSettingsService.readTableColumns(this.selectedConnectionId, this.selectedTable).then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+              const error = (data && data.errmessage) || response.statusText;
+              return Promise.reject(error);
+            }
+
+            this.columnList = data
+            for(var i in this.columnList){
+                this.columnList[i].selected = false
+            }
 
           }).catch(error => {
             console.error("There was an error!", error);
@@ -240,6 +389,34 @@ export default {
         if(this.isClone()){
           this.loadCloneData()
         }
+      },
+      selectAllColumns(event){
+
+        for(var i in this.columnList){
+            this.columnList[i].selected = event.target.checked
+        }
+        this.currentUpdateDateTime = new Date()
+      },
+      addSelectedColumns(){
+        var conn = this.connectionList.filter(item => item.id == this.selectedConnectionId)
+        var item = {"connection": conn[0], "table": this.selectedTable, "columns": this.selectedColumnList}
+        this.workbookDataSourceList.push(item)
+        this.isSelectSourceDialogVisible = false
+        this.currentUpdateDateTime = new Date()
+      },
+      getColumnLabel(item){
+        return item.name + " : " + item.type + "(" + item.size + ")"
+      },
+      showSelectSourceDialog(){
+        this.selectedConnectionId = false
+        this.columnList = []
+        this.tableList = []
+        this.currentUpdateDateTime = new Date()
+        this.isSelectSourceDialogVisible = true
+      },
+      removeWorkbookItem(removeItem){
+        this.workbookDataSourceList = this.workbookDataSourceList.filter(item => ((item.table != removeItem.table) | (item.connection.id != removeItem.connection.id)))
+
       }
 
     },

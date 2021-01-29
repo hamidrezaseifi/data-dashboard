@@ -33,6 +33,33 @@
 .clm-action a{
   padding: 5px;
 }
+
+.modal{
+
+    padding-right: 17px;
+    opacity: 1;
+    background: #80808085;
+}
+
+.modal-header{
+  background: #335e9e;
+  color: #f7f7e5;
+}
+
+.modal-header button.close{
+  padding: 10px 10px;
+  color: #f7f7e5;
+}
+
+.modal-header .modal-title{
+  line-height: 14px;
+}
+
+.modal-footer{
+  padding: 3px 10px !important;
+}
+
+
 </style>
 
 <script>

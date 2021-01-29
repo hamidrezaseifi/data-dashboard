@@ -3,6 +3,7 @@ package de.mediqon.generic.data_dashboard.services.data.impl;
 import de.mediqon.generic.data_dashboard.adapters.IConnectionPropertiesAdapter;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.ConnectionPropertiesEntity;
 import de.mediqon.generic.data_dashboard.exceptions.ConnectionNotFoundException;
+import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
 import de.mediqon.generic.data_dashboard.repositories.IConnectionPropertiesRepository;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
@@ -68,14 +69,44 @@ public class ConnectionPropertiesService implements IConnectionPropertiesService
             DatabaseMetaData dbMeta = connection.getMetaData();
 
             ResultSet rs = dbMeta.getTables(connection.getCatalog(), "", null, new String[]{"TABLE"});
-            ArrayList<String> tables = new ArrayList<String>();
+            List<String> tables = new ArrayList<String>();
             while(rs.next()){
                 String tableName = rs.getString("TABLE_NAME");
                 tables.add(tableName);
             }
+            connection.close();
             return tables;
         }
         else
             throw new ConnectionNotFoundException(id);
+    }
+
+    @Override
+    public List<ColumnDetails> getConnectionTableColumnList(UUID id,
+                                                            String tableName) throws SQLException {
+        Optional<ConnectionPropertiesEntity> connectionPropertiesEntityOptional = getById(id);
+
+        if(connectionPropertiesEntityOptional.isPresent()){
+            ConnectionPropertiesDto connectionPropertiesDto =
+                    this.connectionPropertiesAdapter.toDto(connectionPropertiesEntityOptional.get());
+
+
+            Connection connection = connectionPropertiesDto.generateConnection();
+            DatabaseMetaData dbMeta = connection.getMetaData();
+
+            ResultSet rs = dbMeta.getColumns(null, null, tableName, null);
+            List<ColumnDetails> columns = new ArrayList<>();
+            while(rs.next()){
+                String name = rs.getString("COLUMN_NAME");
+                String type = rs.getString("TYPE_NAME");
+                int size = rs.getInt("COLUMN_SIZE");
+                columns.add(new ColumnDetails(name, type, size));
+            }
+            connection.close();
+            return columns;
+        }
+        else
+            throw new ConnectionNotFoundException(id);
+
     }
 }

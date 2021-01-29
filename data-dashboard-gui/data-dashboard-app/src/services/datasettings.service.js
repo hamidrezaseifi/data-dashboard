@@ -11,7 +11,8 @@ export const dataSettingsService = {
     deleteConnection,
     testConnection,
     cloneConnection,
-    readConnectionTables
+    readConnectionTables,
+    readTableColumns
 
 };
 
@@ -67,4 +68,10 @@ function readConnectionTables(id) {
     const requestOptions = createRequestOptions('GET', true);
 
     return fetch(process.env.VUE_APP_datasettings_baseUrl + "/connections/tablelist/" + id, requestOptions);
+}
+
+function readTableColumns(connectionId, tableName) {
+    const requestOptions = createRequestOptions('GET', true);
+
+    return fetch(process.env.VUE_APP_datasettings_baseUrl + "/connections/tablecolumnlist/" + connectionId + "/" + tableName, requestOptions);
 }

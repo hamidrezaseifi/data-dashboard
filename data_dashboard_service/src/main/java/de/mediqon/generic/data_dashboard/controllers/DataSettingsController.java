@@ -6,6 +6,7 @@ import de.mediqon.generic.data_dashboard.dataconnection.entities.ConnectionPrope
 import de.mediqon.generic.data_dashboard.dataconnection.enums.EDatabaseType;
 import de.mediqon.generic.data_dashboard.enums.EConnectionStatus;
 import de.mediqon.generic.data_dashboard.exceptions.ConnectionNotFoundException;
+import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
 import de.mediqon.generic.data_dashboard.repositories.IConnectionPropertiesRepository;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
@@ -169,6 +170,30 @@ public class DataSettingsController {
         catch (Exception ex){
             JsonError sqlError = new JsonError(String.format("Fehler in der Verbindung: %s" , ex.getMessage()));
             sqlError.link("self", "/datasettings/data/connections/tablelist/" + connectionId);
+            return HttpResponse.badRequest(sqlError);
+        }
+
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Get("/connections/tablecolumnlist/{connectionId}/{tableName}")
+    public HttpResponse<?> getTableColumnList(UUID connectionId, String tableName) {
+
+        try {
+            List<ColumnDetails> tables =
+                    connectionPropertiesService.getConnectionTableColumnList(connectionId, tableName);
+            return HttpResponse.ok(tables);
+        }
+        catch (ConnectionNotFoundException ex){
+            JsonError sqlError = new JsonError(ex.getMessage());
+            sqlError.link("self",
+                          "/datasettings/data/connections/tablecolumnlist/" + connectionId + "/" + tableName);
+            return HttpResponse.badRequest(sqlError);
+        }
+        catch (Exception ex){
+            JsonError sqlError = new JsonError(String.format("Fehler in der Verbindung: %s" , ex.getMessage()));
+            sqlError.link("self",
+                          "/datasettings/data/connections/tablecolumnlist/" + connectionId + "/" + tableName);
             return HttpResponse.badRequest(sqlError);
         }
 
