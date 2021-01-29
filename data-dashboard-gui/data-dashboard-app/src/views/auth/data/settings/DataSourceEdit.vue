@@ -56,7 +56,7 @@
             <span v-if="errmessage != ''" class="alert alert-danger" style="float:left; max-width: calc(100% - 300px);" v-html="errmessage"></span>
             <span v-if="okmessage != ''" class="alert alert-success" style="float:left; max-width: calc(100% - 300px);" v-html="okmessage"></span>
 
-            <button type="button" class="btn btn-secondary actionbutton" v-on:click="testConnection" style="float:right;">Test</button>
+            <button type="button" class="btn btn-secondary actionbutton" v-on:click="testConnection" style="float:right;">Test Verbindung</button>
 
             <button type="submit" class="btn btn-primary actionbutton" style="float:right;">{{saveButtonName}}</button>
           </div>
