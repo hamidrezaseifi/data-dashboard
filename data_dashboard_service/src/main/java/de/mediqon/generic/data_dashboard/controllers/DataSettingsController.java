@@ -8,6 +8,7 @@ import de.mediqon.generic.data_dashboard.enums.EConnectionStatus;
 import de.mediqon.generic.data_dashboard.exceptions.ConnectionNotFoundException;
 import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.QueryColumnRequest;
 import de.mediqon.generic.data_dashboard.repositories.IConnectionPropertiesRepository;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
 import io.micronaut.http.HttpResponse;
@@ -15,6 +16,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.hateoas.JsonError;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 
 import javax.persistence.ManyToOne;
@@ -39,7 +41,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/readall")
-    public HttpResponse<List<ConnectionPropertiesDto>> getAllConnections() {
+    public HttpResponse<List<ConnectionPropertiesDto>> getAllConnections(Authentication authentication) {
         List<ConnectionPropertiesEntity> entityList =  this.connectionPropertiesService.getAll();
         List<ConnectionPropertiesDto> dtoList =  this.connectionPropertiesAdapter.toDtoList(entityList);
 
@@ -48,7 +50,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/new")
-    public HttpResponse<Map<String, Object>> initialNewConnectionPage() {
+    public HttpResponse<Map<String, Object>> initialNewConnectionPage(Authentication authentication) {
         ConnectionPropertiesDto connectionPropertiesDto = new ConnectionPropertiesDto();
         connectionPropertiesDto.setDatabaseType(EDatabaseType.MS_SQL_SERVER);
 
@@ -59,7 +61,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/read/{id}")
-    public HttpResponse<Map<String, Object>> initialReadConnectionPage(UUID id) {
+    public HttpResponse<Map<String, Object>> initialReadConnectionPage(UUID id, Authentication authentication) {
         Optional<ConnectionPropertiesEntity> connectionPropertiesEntityOptional =
                 this.connectionPropertiesService.getById(id);
 
@@ -77,7 +79,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/clone/{id}")
-    public HttpResponse<Map<String, Object>> initialCloneConnectionPage(UUID id) {
+    public HttpResponse<Map<String, Object>> initialCloneConnectionPage(UUID id, Authentication authentication) {
         Optional<ConnectionPropertiesEntity> connectionPropertiesEntityOptional =
                 this.connectionPropertiesService.getById(id);
 
@@ -97,7 +99,9 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Post("/connections/create")
-    public HttpResponse<ConnectionPropertiesDto> create(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto) {
+    public HttpResponse<ConnectionPropertiesDto>
+        create(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto,
+               Authentication authentication) {
 
         ConnectionPropertiesEntity entity = this.connectionPropertiesAdapter.fromDto(connectionPropertiesDto);
 
@@ -112,7 +116,9 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Post("/connections/update")
-    public HttpResponse<ConnectionPropertiesDto> update(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto) {
+    public HttpResponse<ConnectionPropertiesDto>
+        update(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto,
+               Authentication authentication) {
 
         ConnectionPropertiesEntity entity = this.connectionPropertiesAdapter.fromDto(connectionPropertiesDto);
 
@@ -127,7 +133,8 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Post("/connections/delete")
-    public HttpResponse<?> delete(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto) {
+    public HttpResponse<?> delete(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto,
+                                  Authentication authentication) {
 
         ConnectionPropertiesEntity entity = this.connectionPropertiesAdapter.fromDto(connectionPropertiesDto);
 
@@ -138,7 +145,8 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Post("/connections/testconnection")
-    public HttpResponse<?> testConnection(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto) {
+    public HttpResponse<?> testConnection(@Body @Valid ConnectionPropertiesDto connectionPropertiesDto,
+                                          Authentication authentication) {
 
         try {
             Connection connection = connectionPropertiesDto.generateConnection();
@@ -156,7 +164,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/tablelist/{connectionId}")
-    public HttpResponse<?> getTableList(UUID connectionId) {
+    public HttpResponse<?> getTableList(UUID connectionId, Authentication authentication) {
 
         try {
             List<String> tables = connectionPropertiesService.getConnectionTableList(connectionId);
@@ -177,7 +185,7 @@ public class DataSettingsController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/connections/tablecolumnlist/{connectionId}/{tableName}")
-    public HttpResponse<?> getTableColumnList(UUID connectionId, String tableName) {
+    public HttpResponse<?> getTableColumnList(UUID connectionId, String tableName, Authentication authentication) {
 
         try {
             List<ColumnDetails> tables =
@@ -194,6 +202,31 @@ public class DataSettingsController {
             JsonError sqlError = new JsonError(String.format("Fehler in der Verbindung: %s" , ex.getMessage()));
             sqlError.link("self",
                           "/datasettings/data/connections/tablecolumnlist/" + connectionId + "/" + tableName);
+            return HttpResponse.badRequest(sqlError);
+        }
+
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Post("/connections/querycolumnlist")
+    public HttpResponse<?> getQueryColumnList(QueryColumnRequest queryColumnRequest, Authentication authentication) {
+
+        try {
+            List<ColumnDetails> tables =
+                    connectionPropertiesService.getConnectionQueryColumnList(queryColumnRequest.getConnectionId(),
+                                                                             queryColumnRequest.getQuery());
+            return HttpResponse.ok(tables);
+        }
+        catch (ConnectionNotFoundException ex){
+            JsonError sqlError = new JsonError(ex.getMessage());
+            sqlError.link("self",
+                          "/datasettings/data/connections/querycolumnlist");
+            return HttpResponse.badRequest(sqlError);
+        }
+        catch (Exception ex){
+            JsonError sqlError = new JsonError(String.format("Fehler in der Verbindung: %s" , ex.getMessage()));
+            sqlError.link("self",
+                          "/datasettings/data/connections/querycolumnlist");
             return HttpResponse.badRequest(sqlError);
         }
 

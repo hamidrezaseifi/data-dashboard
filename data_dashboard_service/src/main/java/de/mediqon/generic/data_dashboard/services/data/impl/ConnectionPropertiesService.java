@@ -11,10 +11,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.hateoas.JsonError;
 
 import javax.inject.Singleton;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Singleton
@@ -102,6 +99,40 @@ public class ConnectionPropertiesService implements IConnectionPropertiesService
                 int size = rs.getInt("COLUMN_SIZE");
                 columns.add(new ColumnDetails(name, type, size));
             }
+            connection.close();
+            return columns;
+        }
+        else
+            throw new ConnectionNotFoundException(id);
+
+    }
+
+
+    @Override
+    public List<ColumnDetails> getConnectionQueryColumnList(UUID id,
+                                                            String query) throws SQLException {
+        Optional<ConnectionPropertiesEntity> connectionPropertiesEntityOptional = getById(id);
+
+        if(connectionPropertiesEntityOptional.isPresent()){
+            ConnectionPropertiesDto connectionPropertiesDto =
+                    this.connectionPropertiesAdapter.toDto(connectionPropertiesEntityOptional.get());
+
+
+            Connection connection = connectionPropertiesDto.generateConnection();
+
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+
+            List<ColumnDetails> columns = new ArrayList<>();
+            for(int i=1; i<=resultSetMetaData.getColumnCount(); i++){
+                String name = resultSetMetaData.getColumnName(i);
+                String type = resultSetMetaData.getColumnTypeName(i);
+                int size = resultSetMetaData.getColumnDisplaySize(i);
+                columns.add(new ColumnDetails(name, type, size));
+            }
+
+            stmt.close();
             connection.close();
             return columns;
         }

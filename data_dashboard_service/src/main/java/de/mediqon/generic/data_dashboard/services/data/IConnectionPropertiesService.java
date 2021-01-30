@@ -23,4 +23,6 @@ public interface IConnectionPropertiesService {
     List<String> getConnectionTableList(UUID id) throws SQLException;
 
     List<ColumnDetails> getConnectionTableColumnList(UUID id, String tableName) throws SQLException;
+
+    List<ColumnDetails> getConnectionQueryColumnList(UUID id, String query) throws SQLException;
 }

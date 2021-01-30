@@ -12,21 +12,37 @@
           </div>
           <div class="modal-body">
               <div class="form-group">
-                <label for="connectionlist" class="item-title">Verbindung-Liste</label>
-                <select class="form-control" id="connectionlist" @change="onConnectionChange($event)" v-model="selectedConnectionId" name="selectedConnectionId">
-                  <option v-for="item in getConnectionList" :key="item.id" v-bind:value="item.id" >{{item.name}}</option>
-                </select>
+                  <label for="connectionlist" class="item-title">Name</label>
+                  <input class="form-control" id="datasourcename" v-model="dataSource.name" />
               </div>
-              <div class="sub-item-container" >
+              <div class="form-group">
+                  <label for="connectionlist" class="item-title">Verbindung-Liste</label>
+                  <select class="form-control" id="connectionlist" @change="onConnectionChange($event)" v-model="dataSource.connectionId" name="selectedConnectionId">
+                      <option v-for="item in getConnectionList" :key="item.id" v-bind:value="item.id" >{{item.name}}</option>
+                  </select>
+              </div>
+              <div class="sub-item-container" v-if="dataSource.connectionId" >
                 <div class="sub-item">
 
-                    <label class="top">Tabelle-Liste</label>
-                    <input class="search" id="keyfilterTableText" placeholder="" v-model="filterTableText">
-                    <div  class="sub-item-list">
-                      <ul  class="list-group">
-                        <li class="list-group-item" style="cursor: pointer;" v-bind:class="{active : item === selectedTable}"
+                    <label class="top" style="width:80px" for="sourcetype">Quelle-Typ</label>
+                    <select class="sourcetype"  id="sourcetype" @change="onSourceTypeChange($event)" v-model="dataSource.sourceType">
+                        <option value="TABLE" >Tabelle</option>
+                        <option value="QUERY" >Query</option>
+                    </select>
+                    <br>
+                    <label class="top" v-if="dataSource.sourceType == 'TABLE'" style="width:80px">Tabelle-Liste</label>
+                    <input class="search" v-if="dataSource.sourceType == 'TABLE'" id="keyfilterTableText" placeholder="" v-model="filterTableText">
+
+                    <div  class="sub-item-list tables" v-if="dataSource.sourceType == 'TABLE'">
+                        <ul  class="list-group">
+                            <li class="list-group-item" style="cursor: pointer;" v-bind:class="{active : item === dataSource.table}"
                                 v-on:click="loadTableColumns(item)" v-for="item in filterTableList" :key="item" >{{item}}</li>
-                      </ul>
+                        </ul>
+                    </div>
+
+                    <div  class="sub-item-list query" v-if="dataSource.sourceType == 'QUERY'">
+                        <textarea class="query" v-model="dataSource.query" ></textarea>
+                        <button type="button" :disabled="isRetrieveQueryColumnsDisabled" class="btn btn-secondary retrieve-columns-button" v-on:click="retrieveQueryColumns" >Spalten abrufen</button>
                     </div>
 
                 </div>
@@ -36,7 +52,7 @@
                     <input class="search" id="keyfiltercolumnText" placeholder="" v-model="filterColumnText">
                     <label class="top">Alle</label>
                     <input class="search-checkall" type="checkbox" v-on:click="selectAllColumns($event)">
-                    <div class="sub-item-list">
+                    <div class="sub-item-list columns">
                       <ul  class="list-group">
                         <li class="list-group-item" v-for="item in filterColumnList" :key="item.name" >
                           <input type="checkbox" :checked="item.selected" v-on:click="item.selected = !item.selected; currentUpdateDateTime = new Date()" >
@@ -106,7 +122,7 @@ label.item-title{
   padding: 10px;
   border: 1px solid rgba(0,0,0,.125);
   border-radius: 5px;
-  height: calc(100% - 60px);
+  height: calc(100% - 110px);
 }
 
 .sub-item{
@@ -121,13 +137,28 @@ label.item-title{
 }
 
 .sub-item-list{
-  height: calc(100% - 50px);
   overflow: auto;
   padding: 6px;
-      margin-top: 5px;
+  margin-top: 5px;
+  border-top: 1px solid #ced4da;
 }
 
-.sub-item input.search{
+.sub-item-list.tables{
+  height: calc(100% - 70px);
+}
+
+.sub-item-list.query{
+  height: calc(100% - 17px);
+}
+
+.sub-item-list.columns{
+  height: calc(100% - 40px);
+}
+
+
+
+
+.sub-item input.search, .sub-item select.sourcetype{
   padding: 3px;
   font-size: 12px;
   width: 150px;
@@ -154,6 +185,28 @@ label.item-title{
     color: #f7f7e5;
 }
 
+label.radio-label{
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+
+textarea.query {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    height: calc(100% - 50px);
+    max-height: calc(100% - 50px);
+    min-height: calc(100% - 50px);
+    border: 1px solid #ced4da;
+}
+
+.retrieve-columns-button{
+    width: 150px !important;
+    padding: 3px !important;
+    margin-left: calc(100% - 150px) !important;
+
+}
 </style>
 <script>
 import { dataSettingsService } from '../../services/datasettings.service';
@@ -162,8 +215,6 @@ export default {
     name: 'NewConnection',
     data () {
         return {
-          selectedConnectionId: false,
-          selectedTable: false,
           tableList:[],
           columnList:[],
           filterTableText: "",
@@ -171,6 +222,7 @@ export default {
           errmessage: "",
           okmessage: "",
           id: false,
+          dataSource: {"name": "", "connectionId": false, "connectionName" : "", "sourceType": "TABLE", "query": "", "table": false, "columns": []},
           currentUpdateDateTime: new Date()
         }
     },
@@ -180,10 +232,10 @@ export default {
         immediate: true,
         handler (val, oldVal) {
           if(val && !oldVal){
+            this.dataSource =  {"name": "", "connectionId": false, "connectionName" : "", "sourceType": "TABLE", "query": "", "table": false, "columns": []}
             this.tableList = []
             this.columnList = []
-            this.selectedTable = false
-            this.selectedConnectionId = false
+
             this.filterTableText = ""
             this.filterColumnText = ""
           }
@@ -209,7 +261,12 @@ export default {
       isAddDataSourceDisabled: function (){
         this.currentUpdateDateTime
 
-        return this.selectedColumnList.length == 0
+        return this.selectedColumnList.length == 0 || this.dataSource.name.trim().length == 0
+      },
+      isRetrieveQueryColumnsDisabled: function (){
+        this.currentUpdateDateTime
+
+        return this.dataSource.query.trim().length < 10
       },
       getSelectSourceDialogVisible: function (){
         this.currentUpdateDateTime
@@ -224,7 +281,7 @@ export default {
     methods: {
       loadTables(){
 
-          dataSettingsService.readConnectionTables(this.selectedConnectionId).then(async response => {
+          dataSettingsService.readConnectionTables(this.dataSource.connectionId).then(async response => {
             const data = await response.json();
             if (!response.ok) {
               const error = (data && data.errmessage) || response.statusText;
@@ -239,8 +296,8 @@ export default {
           })
       },
       loadTableColumns(tableName){
-          this.selectedTable = tableName
-          dataSettingsService.readTableColumns(this.selectedConnectionId, this.selectedTable).then(async response => {
+          this.dataSource.table = tableName
+          dataSettingsService.readTableColumns(this.dataSource.connectionId, this.dataSource.table).then(async response => {
             const data = await response.json();
             if (!response.ok) {
               const error = (data && data.errmessage) || response.statusText;
@@ -256,6 +313,32 @@ export default {
             console.error("There was an error!", error);
           })
       },
+      onSourceTypeChange(){
+        this.columnList = []
+        this.filterColumnText = ""
+        this.currentUpdateDateTime = new Date()
+      },
+      retrieveQueryColumns(){
+
+          var request = {"connectionId": this.dataSource.connectionId, "query": this.dataSource.query}
+
+          dataSettingsService.readQueryColumns(request).then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+              const error = (data && data.errmessage) || response.statusText;
+              return Promise.reject(error);
+            }
+
+            this.columnList = data
+            for(var i in this.columnList){
+                this.columnList[i].selected = false
+            }
+
+          }).catch(error => {
+            console.error("There was an error!", error);
+          })
+
+      },
       onConnectionChange(){
         this.loadTables()
       },
@@ -267,9 +350,11 @@ export default {
         this.currentUpdateDateTime = new Date()
       },
       addSelectedColumns(){
-        var conn = this.connectionList.filter(item => item.id == this.selectedConnectionId)
-        var item = {"connection": conn[0], "table": this.selectedTable, "columns": this.selectedColumnList}
-        this.$emit('sourceSelected', item)
+        var conn = this.connectionList.filter(item => item.id == this.dataSource.connectionId)
+        this.dataSource.connectionName = conn[0].name
+        this.dataSource.columns = this.selectedColumnList
+
+        this.$emit('sourceSelected', this.dataSource)
 
       },
       getColumnLabel(item){
