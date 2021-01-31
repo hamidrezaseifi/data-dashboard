@@ -29,7 +29,7 @@
       </div>
       <div class="card-body">
           <ul  class="list-group">
-              <li class="list-group-item" v-for="column in getWorkbookDataSourceItem.columns" :key="column.name" >
+              <li class="list-group-item column-item" v-for="column in getWorkbookDataSourceItem.columns" :key="column.name" >
 
                   <span style="margin-left: 9px;">{{ getColumnLabel(column)}}</span>
               </li>
@@ -43,11 +43,30 @@
 <style>
 
 .workbook-item {
-    width: 400px;
+    width: 260px;
     max-height: 400px;
     height: 400px;
     float: left;
     margin: 5px;
+    font-size: 12px;
+}
+
+.workbook-item .column-item {
+   padding: 4px;
+
+   overflow: hidden;
+}
+
+.workbook-item .column-item span {
+    display: inline-block;
+    width: 220px;
+    max-width: 220px;
+    max-height: 16px;
+    overflow: hidden;
+}
+
+.workbook-item .card-header{
+   padding: 8px 8px;
 }
 
 .workbook-item .card-body {
