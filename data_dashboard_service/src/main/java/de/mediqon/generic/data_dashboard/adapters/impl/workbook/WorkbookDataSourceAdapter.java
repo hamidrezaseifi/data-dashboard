@@ -25,8 +25,10 @@ public class WorkbookDataSourceAdapter
         WorkbookDataSourceEntity model = new WorkbookDataSourceEntity();
         model.setConnectionId(dto.getConnectionId());
         model.setColumns(workbookDataSourceColumnAdapter.fromDtoList(dto.getColumns()));
-        model.setDataSource(dto.getDataSource());
+        model.setName(dto.getName());
         model.setDataSourceType(dto.getDataSourceType());
+        model.setQuery(dto.getQuery());
+        model.setTable(dto.getTable());
         model.setStatus(dto.getStatus());
         model.setVersion(dto.getVersion());
         model.setId(dto.getId());
@@ -40,8 +42,10 @@ public class WorkbookDataSourceAdapter
 
         dto.setConnectionId(model.getConnectionId());
         dto.setColumns(workbookDataSourceColumnAdapter.toDtoList(model.getColumns()));
-        dto.setDataSource(model.getDataSource());
+        dto.setName(model.getName());
         dto.setDataSourceType(model.getDataSourceType());
+        dto.setQuery(model.getQuery());
+        dto.setTable(model.getTable());
         dto.setStatus(model.getStatus());
         dto.setVersion(model.getVersion());
         dto.setId(model.getId());

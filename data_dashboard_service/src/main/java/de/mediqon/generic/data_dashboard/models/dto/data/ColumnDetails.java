@@ -10,8 +10,8 @@ import io.micronaut.core.annotation.Introspected;
 @Introspected
 public class ColumnDetails {
 
-    private String name;
-    private String type;
+    private String columnName;
+    private String columnType;
     private int size;
 
     public ColumnDetails() {
@@ -20,25 +20,25 @@ public class ColumnDetails {
     public ColumnDetails(String name,
                          String type,
                          int size) {
-        this.name = name;
-        this.type = type;
+        this.columnName = name;
+        this.columnType = type;
         this.size = size;
     }
 
-    public String getName() {
-        return name;
+    public String getColumnName() {
+        return columnName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
-    public String getType() {
-        return type;
+    public String getColumnType() {
+        return columnType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setColumnType(String columnType) {
+        this.columnType = columnType;
     }
 
     public int getSize() {

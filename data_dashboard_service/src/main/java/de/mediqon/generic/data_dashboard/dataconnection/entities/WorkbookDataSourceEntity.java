@@ -17,11 +17,17 @@ public class WorkbookDataSourceEntity extends BaseEntity {
     @Column(name = "connection_id")
     private UUID connectionId;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "data_source_type")
     private String dataSourceType;
 
-    @Column(name = "data_source")
-    private String dataSource;
+    @Column(name = "table_name")
+    private String table;
+
+    @Column(name = "query_script")
+    private String query;
 
     @Column(name = "status")
     protected Integer status = 1;
@@ -48,6 +54,14 @@ public class WorkbookDataSourceEntity extends BaseEntity {
         this.connectionId = connectionId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDataSourceType() {
         return dataSourceType;
     }
@@ -56,12 +70,20 @@ public class WorkbookDataSourceEntity extends BaseEntity {
         this.dataSourceType = dataSourceType;
     }
 
-    public String getDataSource() {
-        return dataSource;
+    public String getTable() {
+        return table;
     }
 
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public WorkbookEntity getWorkbook() {

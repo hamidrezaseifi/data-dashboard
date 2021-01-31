@@ -51,12 +51,17 @@ const routes = [
     name: 'DataSourceEdit',
     component: DataSourceEdit
   },
-   {
+  {
      path: '/data/settings/workbook/new',
      name: 'WorkbookEdit',
      component: WorkbookEdit
-   },
- {
+  },
+  {
+     path: '/data/settings/workbook/edit/:id',
+     name: 'WorkbookEdit',
+     component: WorkbookEdit
+  },
+  {
     path: '/about',
     name: 'About',
     component: About

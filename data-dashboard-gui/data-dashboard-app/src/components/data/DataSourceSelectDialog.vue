@@ -25,22 +25,22 @@
                 <div class="sub-item">
 
                     <label class="top" style="width:80px" for="sourcetype">Quelle-Typ</label>
-                    <select class="sourcetype"  id="sourcetype" @change="onSourceTypeChange($event)" v-model="dataSource.sourceType">
+                    <select class="sourcetype"  id="sourcetype" @change="onSourceTypeChange($event)" v-model="dataSource.dataSourceType">
                         <option value="TABLE" >Tabelle</option>
                         <option value="QUERY" >Query</option>
                     </select>
                     <br>
-                    <label class="top" v-if="dataSource.sourceType == 'TABLE'" style="width:80px">Tabelle-Liste</label>
-                    <input class="search" v-if="dataSource.sourceType == 'TABLE'" id="keyfilterTableText" placeholder="" v-model="filterTableText">
+                    <label class="top" v-if="dataSource.dataSourceType == 'TABLE'" style="width:80px">Tabelle-Liste</label>
+                    <input class="search" v-if="dataSource.dataSourceType == 'TABLE'" id="keyfilterTableText" placeholder="" v-model="filterTableText">
 
-                    <div  class="sub-item-list tables" v-if="dataSource.sourceType == 'TABLE'">
+                    <div  class="sub-item-list tables" v-if="dataSource.dataSourceType == 'TABLE'">
                         <ul  class="list-group">
                             <li class="list-group-item" style="cursor: pointer;" v-bind:class="{active : item === dataSource.table}"
                                 v-on:click="loadTableColumns(item)" v-for="item in filterTableList" :key="item" >{{item}}</li>
                         </ul>
                     </div>
 
-                    <div  class="sub-item-list query" v-if="dataSource.sourceType == 'QUERY'">
+                    <div  class="sub-item-list query" v-if="dataSource.dataSourceType == 'QUERY'">
                         <textarea class="query" v-model="dataSource.query" ></textarea>
                         <button type="button" :disabled="isRetrieveQueryColumnsDisabled" class="btn btn-secondary retrieve-columns-button" v-on:click="retrieveQueryColumns" >Spalten abrufen</button>
                     </div>
@@ -54,7 +54,7 @@
                     <input class="search-checkall" type="checkbox" v-on:click="selectAllColumns($event)">
                     <div class="sub-item-list columns">
                       <ul  class="list-group">
-                        <li class="list-group-item" v-for="item in filterColumnList" :key="item.name" >
+                        <li class="list-group-item" v-for="item in filterColumnList" :key="item.columnName" >
                           <input type="checkbox" :checked="item.selected" v-on:click="item.selected = !item.selected; currentUpdateDateTime = new Date()" >
                           <span style="margin-left: 9px;">{{ getColumnLabel(item)}}</span>
                         </li>
@@ -222,17 +222,17 @@ export default {
           errmessage: "",
           okmessage: "",
           id: false,
-          dataSource: {"name": "", "connectionId": false, "connectionName" : "", "sourceType": "TABLE", "query": "", "table": false, "columns": []},
+          dataSource: {"name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []},
           currentUpdateDateTime: new Date()
         }
     },
-    props:["connectionList", "isDialogVisible"],
+    props:["connections", "isDialogVisible"],
     watch: {
       isDialogVisible: {
         immediate: true,
         handler (val, oldVal) {
           if(val && !oldVal){
-            this.dataSource =  {"name": "", "connectionId": false, "connectionName" : "", "sourceType": "TABLE", "query": "", "table": false, "columns": []}
+            this.dataSource =  {"name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
             this.tableList = []
             this.columnList = []
 
@@ -252,7 +252,7 @@ export default {
       },
       filterColumnList: function (){
         this.currentUpdateDateTime
-        return this.filterColumnText == "" ? this.columnList : this.columnList.filter(item => item.name.includes(this.filterColumnText))
+        return this.filterColumnText == "" ? this.columnList : this.columnList.filter(item => item.columnName.includes(this.filterColumnText))
       },
       selectedColumnList: function (){
         this.currentUpdateDateTime
@@ -275,7 +275,7 @@ export default {
       getConnectionList: function (){
         this.currentUpdateDateTime
 
-        return this.connectionList
+        return this.connections
       }
     },
     methods: {
@@ -350,7 +350,7 @@ export default {
         this.currentUpdateDateTime = new Date()
       },
       addSelectedColumns(){
-        var conn = this.connectionList.filter(item => item.id == this.dataSource.connectionId)
+        var conn = this.connections.filter(item => item.id == this.dataSource.connectionId)
         this.dataSource.connectionName = conn[0].name
         this.dataSource.columns = this.selectedColumnList
 
@@ -358,7 +358,7 @@ export default {
 
       },
       getColumnLabel(item){
-        return item.name + " : " + item.type + "(" + item.size + ")"
+        return item.columnName + " : " + item.columnType + "(" + item.size + ")"
       },
       closeDialog(){
         this.$emit('close')

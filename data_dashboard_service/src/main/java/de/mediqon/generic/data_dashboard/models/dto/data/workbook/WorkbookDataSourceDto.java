@@ -18,11 +18,15 @@ import java.util.UUID;
 @Introspected
 public class WorkbookDataSourceDto extends BaseDto {
 
-     private UUID connectionId;
+    private UUID connectionId;
+
+    private String name;
 
     private String dataSourceType;
 
-    private String dataSource;
+    private String table;
+
+    private String query;
 
     protected Integer status = 1;
 
@@ -36,6 +40,14 @@ public class WorkbookDataSourceDto extends BaseDto {
         this.connectionId = connectionId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDataSourceType() {
         return dataSourceType;
     }
@@ -44,12 +56,21 @@ public class WorkbookDataSourceDto extends BaseDto {
         this.dataSourceType = dataSourceType;
     }
 
-    public String getDataSource() {
-        return dataSource;
+
+    public String getTable() {
+        return table;
     }
 
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public Integer getStatus() {

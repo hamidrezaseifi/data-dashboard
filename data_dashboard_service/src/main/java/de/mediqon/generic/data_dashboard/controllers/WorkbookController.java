@@ -1,16 +1,20 @@
 package de.mediqon.generic.data_dashboard.controllers;
 
 import de.mediqon.generic.data_dashboard.adapters.IConnectionPropertiesAdapter;
+import de.mediqon.generic.data_dashboard.adapters.ICustomerAdapter;
 import de.mediqon.generic.data_dashboard.adapters.IWorkbookAdapter;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.ConnectionPropertiesEntity;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookEntity;
 import de.mediqon.generic.data_dashboard.dataconnection.enums.EDatabaseType;
+import de.mediqon.generic.data_dashboard.entities.CustomerEntity;
 import de.mediqon.generic.data_dashboard.enums.EConnectionStatus;
 import de.mediqon.generic.data_dashboard.exceptions.ConnectionNotFoundException;
+import de.mediqon.generic.data_dashboard.models.dto.CustomerDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.QueryColumnRequest;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookDto;
+import de.mediqon.generic.data_dashboard.services.ICustomerService;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
 import de.mediqon.generic.data_dashboard.services.data.IWorkbookService;
 import io.micronaut.http.HttpResponse;
@@ -34,15 +38,21 @@ public class WorkbookController {
     private final IWorkbookAdapter workbookAdapter;
     private final IConnectionPropertiesService connectionPropertiesService;
     private final IConnectionPropertiesAdapter connectionPropertiesAdapter;
+    private final ICustomerService customerService;
+    private final ICustomerAdapter customerAdapter;
 
     public WorkbookController(IWorkbookService workbookService,
                               IWorkbookAdapter workbookAdapter,
                               IConnectionPropertiesService connectionPropertiesService,
-                              IConnectionPropertiesAdapter connectionPropertiesAdapter) {
+                              IConnectionPropertiesAdapter connectionPropertiesAdapter,
+                              ICustomerService customerService,
+                              ICustomerAdapter customerAdapter) {
         this.workbookService = workbookService;
         this.workbookAdapter = workbookAdapter;
         this.connectionPropertiesService = connectionPropertiesService;
         this.connectionPropertiesAdapter = connectionPropertiesAdapter;
+        this.customerService = customerService;
+        this.customerAdapter = customerAdapter;
     }
 
     @Produces(MediaType.APPLICATION_JSON)
@@ -60,11 +70,7 @@ public class WorkbookController {
                                                                       UUID customerId) {
         WorkbookDto newDto = new WorkbookDto();
 
-        List<ConnectionPropertiesDto> connectionDtoList = getConnectionDtoList();
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("workbook", newDto);
-        map.put("connections", connectionDtoList);
+        Map<String, Object> map = getPageInitialData(newDto);
 
         return HttpResponse.ok(map);
     }
@@ -79,11 +85,7 @@ public class WorkbookController {
         if(workbookEntityOptional.isPresent()){
             WorkbookDto workbookDto = this.workbookAdapter.toDto(workbookEntityOptional.get());
 
-            List<ConnectionPropertiesDto> connectionDtoList = getConnectionDtoList();
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("workbook", workbookDto);
-            map.put("connections", connectionDtoList);
+            Map<String, Object> map = getPageInitialData(workbookDto);
 
             return HttpResponse.ok(map);
         }
@@ -101,11 +103,8 @@ public class WorkbookController {
         if(workbookEntityOptional.isPresent()){
             WorkbookDto workbookDto = this.workbookAdapter.toDto(workbookEntityOptional.get());
             workbookDto.setName(workbookDto.getName() + "_1");
-            List<ConnectionPropertiesDto> connectionDtoList = getConnectionDtoList();
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("workbook", workbookDto);
-            map.put("connections", connectionDtoList);
+            Map<String, Object> map = getPageInitialData(workbookDto);
 
             return HttpResponse.ok(map);
         }
@@ -170,6 +169,23 @@ public class WorkbookController {
                 this.connectionPropertiesAdapter.toDtoList(connectionEntityList);
 
         return connectionDtoList;
+    }
+
+    private List<CustomerDto> getAllCustomers() {
+        List<CustomerEntity> entityList =  this.customerService.getAllStatusOk();
+        List<CustomerDto> dtoList =  this.customerAdapter.toDtoList(entityList);
+
+        return dtoList;
+    }
+
+    private Map<String, Object> getPageInitialData(WorkbookDto workbookDto){
+        Map<String, Object> map = new HashMap<>();
+        map.put("workbook", workbookDto);
+        map.put("connections", getConnectionDtoList());
+        map.put("customers", getAllCustomers());
+
+        return map;
+
     }
 
 }

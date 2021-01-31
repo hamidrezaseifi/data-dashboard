@@ -120,7 +120,7 @@ export default {
     methods: {
 
       getColumnLabel(item){
-        return item.name + " : " + item.type + "(" + item.size + ")"
+        return item.columnName + " : " + item.columnType + "(" + item.size + ")"
       },
       removeWorkbookItem(){
 
