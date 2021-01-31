@@ -1,5 +1,6 @@
 package de.mediqon.generic.data_dashboard.dataconnection.entities;
 
+import de.mediqon.generic.data_dashboard.entities.CustomerEntity;
 import de.mediqon.generic.data_dashboard.entities.base.BaseEntity;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -16,15 +17,25 @@ public class WorkbookEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "status")
     protected Integer status = 1;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private Date updatedAt;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "workbook", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookDataSourceEntity> dataSources = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private CustomerEntity customer;
 
 
     public String getName() {
@@ -33,6 +44,14 @@ public class WorkbookEntity extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getStatus() {
@@ -47,6 +66,10 @@ public class WorkbookEntity extends BaseEntity {
         return createdAt;
     }
 
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
     public List<WorkbookDataSourceEntity> getDataSources() {
         return dataSources;
     }
@@ -59,5 +82,21 @@ public class WorkbookEntity extends BaseEntity {
     public void addDataSource(WorkbookDataSourceEntity dataSource) {
         dataSource.setWorkbook(this);
         this.dataSources.add(dataSource);
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 }

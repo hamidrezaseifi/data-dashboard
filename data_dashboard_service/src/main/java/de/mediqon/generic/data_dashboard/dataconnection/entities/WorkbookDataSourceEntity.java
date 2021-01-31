@@ -17,8 +17,11 @@ public class WorkbookDataSourceEntity extends BaseEntity {
     @Column(name = "connection_id")
     private UUID connectionId;
 
-    @Column(name = "table_name")
-    private String tableName;
+    @Column(name = "data_source_type")
+    private String dataSourceType;
+
+    @Column(name = "data_source")
+    private String dataSource;
 
     @Column(name = "status")
     protected Integer status = 1;
@@ -26,6 +29,8 @@ public class WorkbookDataSourceEntity extends BaseEntity {
     @Column(name = "created_at", insertable = false, updatable = false)
     private Date createdAt;
 
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private Date updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workbook_id", nullable = false)
@@ -43,12 +48,20 @@ public class WorkbookDataSourceEntity extends BaseEntity {
         this.connectionId = connectionId;
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getDataSourceType() {
+        return dataSourceType;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setDataSourceType(String dataSourceType) {
+        this.dataSourceType = dataSourceType;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
     public WorkbookEntity getWorkbook() {
@@ -69,6 +82,18 @@ public class WorkbookDataSourceEntity extends BaseEntity {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public List<WorkbookDataSourceColumnEntity> getColumns() {

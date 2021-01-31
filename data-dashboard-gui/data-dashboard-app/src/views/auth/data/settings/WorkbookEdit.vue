@@ -99,6 +99,7 @@ input.form-control , select.form-control {
 </style>
 <script>
 import { dataSettingsService } from '../../../../services/datasettings.service';
+import { workbookService } from '../../../../services/workbook.service';
 import DataSourceSelectDialog from '../../../../components/data/DataSourceSelectDialog.vue';
 import WorkbookDataSourceItem from '../../../../components/data/WorkbookDataSourceItem.vue';
 
@@ -116,7 +117,8 @@ export default {
           id: false,
           isSelectSourceDialogVisible: false,
           currentUpdateDateTime: new Date(),
-          workbookDataSourceList: []
+          workbookDataSourceList: [],
+          workbook: {}
         }
     },
     components:{
@@ -125,6 +127,13 @@ export default {
     },
     props:["inBox", "clone"],
     computed: {
+      customerId: {
+        get () {
+
+          return this.$store.state.authentication.loginData.customer.id
+        }
+
+      },
       saveButtonName: function (){
         return this.isNew() ? "Erstellen" : "Speiren"
       },
@@ -142,15 +151,16 @@ export default {
       }
     },
     methods: {
-      loadConnections(){
-        dataSettingsService.getAllConnections().then(async response => {
+      loadInitialData(){
+        workbookService.newWorkbook(this.customerId).then(async response => {
             const data = await response.json();
             if (!response.ok) {
               const error = (data && data.message) || response.statusText;
               return Promise.reject(error);
             }
 
-            this.connectionList = data;
+            this.connectionList = data.connections;
+            this.workbook = data.workbook
             this.currentUpdateDateTime = new Date()
 
             }).catch(error => {
@@ -237,7 +247,7 @@ export default {
 
     },
     created () {
-      this.loadConnections()
+      this.loadInitialData()
 
     }
 };
