@@ -57,11 +57,15 @@ public class WorkbookController {
 
     @Produces(MediaType.APPLICATION_JSON)
     @Get("/readall/{customerId}")
-    public HttpResponse<List<WorkbookDto>> getAllConnections(Authentication authentication, UUID customerId) {
+    public HttpResponse<Map<String, Object>> getAllConnections(Authentication authentication, UUID customerId) {
         List<WorkbookEntity> entityList =  this.workbookService.getAllCustomerWorkbooks(customerId);
         List<WorkbookDto> dtoList =  this.workbookAdapter.toDtoList(entityList);
 
-        return HttpResponse.ok(dtoList);
+        Map<String, Object> map = new HashMap<>();
+        map.put("workbooks", dtoList);
+        map.put("customers", getAllCustomers());
+
+        return HttpResponse.ok(map);
     }
 
     @Produces(MediaType.APPLICATION_JSON)

@@ -6,7 +6,7 @@
 
         <b>{{pageTitle}}</b>
 
-        <router-link class="toolbar-item" to="/data/settings/connections"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
+        <router-link class="toolbar-item" to="/data/settings/workbook/list"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
       </div>
       <div class="card-body">
 
@@ -17,16 +17,16 @@
                 <a class="nav-link active" id="generaltab" data-toggle="tab" href="#generaltabcontent" role="tab" aria-controls="home" aria-selected="true">Info</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="datasourcestab" v-bind:class="{disabled: isDataSourceTabDisabled}" data-toggle="tab" href="#datasourcestabcontent" role="tab" aria-controls="home" aria-selected="true">Datenquelle</a>
+                <a class="nav-link" id="datasourcestab" v-bind:class="{disabled: isDataSourceTabDisabled}" data-toggle="tab" href="#datasourcestabcontent" role="tab" aria-selected="true">Datenquelle</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="columnstab" v-bind:class="{disabled: isColumnsTabDisabled}" data-toggle="tab" href="#columnstabcontent" role="tab" aria-controls="profile" aria-selected="false">Spalten</a>
+                <a class="nav-link" id="dataviewstab" v-bind:class="{disabled: isDataviewsTabDisabled}" data-toggle="tab" href="#dataviewstabcontent" role="tab" aria-selected="false">Datenansichten</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="presentationtab" v-bind:class="{disabled: isPresentationTabDisabled}" data-toggle="tab" href="#presentationtabcontent" role="tab" aria-controls="profile" aria-selected="false">Präsentation</a>
+                <a class="nav-link" id="presentationtab" v-bind:class="{disabled: isPresentationTabDisabled}" data-toggle="tab" href="#presentationtabcontent" role="tab" aria-selected="false">Präsentation</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="finaltab" v-bind:class="{disabled: isFinalTabDisabled}" data-toggle="tab" href="#profile" role="tab" aria-controls="finaltabcontent" aria-selected="false">Finalisieren</a>
+                <a class="nav-link" id="finaltab" v-bind:class="{disabled: isFinalTabDisabled}" data-toggle="tab" href="#finaltabcontent" role="tab" aria-selected="false">Finalisieren</a>
             </li>
           </ul>
           <div class="tab-content" id="myTabContent">
@@ -67,14 +67,17 @@
                   <div class="clear"></div>
 
               </div>
-              <div class="tab-pane fade tabs-content" id="columnstabcontent" role="tabpanel" aria-labelledby="columnstab">
-
+              <div class="tab-pane fade tabs-content" id="dataviewstabcontent" role="tabpanel" aria-labelledby="dataviewstab">
+                  <div class="datasource-toolbar">
+                      <button type="button" class="btn add-source-button" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/dataview.png" width="20" /></button>
+                  </div>
+                Data Views
               </div>
               <div class="tab-pane fade tabs-content" id="presentationtabcontent" role="tabpanel" aria-labelledby="presentationtab">
-
+                  presentation
               </div>
               <div class="tab-pane fade tabs-content" id="finaltabcontent" role="tabpanel" aria-labelledby="finaltab">
-
+                  final
               </div>
           </div>
 
@@ -187,7 +190,7 @@ export default {
         this.currentUpdateDateTime
         return !this.workbook.customerId
       },
-      isColumnsTabDisabled: function (){
+      isDataviewsTabDisabled: function (){
         this.currentUpdateDateTime
         return !this.workbook.customerId || !this.workbook.dataSources || this.workbook.dataSources.length == 0
       },

@@ -9,7 +9,8 @@ import KrankenhausChart from '../views/auth/data/KrankenhausChart.vue'
 import TestChart from '../views/auth/data/TestChart.vue'
 import DataSourceSettings from '../views/auth/data/settings/DataSourceSettings.vue'
 import DataSourceEdit from '../views/auth/data/settings/DataSourceEdit.vue'
-import WorkbookEdit from '../views/auth/data/settings/WorkbookEdit.vue'
+import WorkbookEdit from '../views/auth/data/workbook/WorkbookEdit.vue'
+import WorkbookList from '../views/auth/data/workbook/WorkbookList.vue'
 
 Vue.use(VueRouter)
 
@@ -50,6 +51,11 @@ const routes = [
     path: '/data/settings/connections/new',
     name: 'DataSourceEdit',
     component: DataSourceEdit
+  },
+  {
+     path: '/data/settings/workbook/list',
+     name: 'WorkbookList',
+     component: WorkbookList
   },
   {
      path: '/data/settings/workbook/new',

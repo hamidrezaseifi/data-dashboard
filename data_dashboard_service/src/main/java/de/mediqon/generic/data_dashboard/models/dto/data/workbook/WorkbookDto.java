@@ -29,6 +29,8 @@ public class WorkbookDto extends BaseDto {
 
     private UUID customerId;
 
+    private String customerName;
+
 
     public String getName() {
         return name;
@@ -72,5 +74,13 @@ public class WorkbookDto extends BaseDto {
 
     public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }

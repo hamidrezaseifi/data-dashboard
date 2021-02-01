@@ -47,6 +47,7 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
         dto.setStatus(model.getStatus());
         dto.setVersion(model.getVersion());
         dto.setId(model.getId());
+        dto.setCustomerName(model.getCustomer().getName());
 
         return dto;
     }

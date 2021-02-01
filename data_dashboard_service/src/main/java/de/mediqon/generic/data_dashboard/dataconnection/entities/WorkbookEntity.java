@@ -33,7 +33,7 @@ public class WorkbookEntity extends BaseEntity {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookDataSourceEntity> dataSources = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 

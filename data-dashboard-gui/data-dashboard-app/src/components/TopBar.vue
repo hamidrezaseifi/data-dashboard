@@ -16,7 +16,16 @@
             <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/testchart') }" to="/data/testchart">TestChart</router-link >
             <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/krankenhaus') }" to="/data/krankenhaus">KrankenhausChart</router-link>
             <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/settings/connections') }" to="/data/settings/connections">Datenquelle-Verbindung</router-link>
-            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/settings/workbook/new') }" to="/data/settings/workbook/new">Worbook</router-link>
+
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownworkbook" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Workbook
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownworkbook">
+            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/settings/workbook/list') }" to="/data/settings/workbook/list">Workbook-Liste</router-link >
+            <router-link class="dropdown-item" v-bind:class="{ active: isActive('/data/settings/workbook/new') }" to="/data/settings/workbook/list">Workbook erstellen</router-link >
 
           </div>
         </li>
