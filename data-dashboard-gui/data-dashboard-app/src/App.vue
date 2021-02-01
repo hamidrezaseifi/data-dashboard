@@ -73,6 +73,14 @@ export default {
 
         }
     },
+    head: {
+       link: [
+             {
+                 rel: "icon",
+                 href: require("./assets/images/mq-logo.svg")
+             },
+          ]
+    },
     components: {
       TopBar
     },

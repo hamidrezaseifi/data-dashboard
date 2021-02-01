@@ -1,6 +1,9 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light m-navbar">
-    <router-link class="navbar-brand" to="/">Data Portal ...</router-link>
+    <router-link class="navbar-brand" to="/">
+      <img src="@/assets/images/q_mediqon-150x150.png" alt="" class="banner-logo">
+      Data Portal ...
+    </router-link>
 
     <div v-if="isLoggedIn" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav menu-nvabar">
@@ -63,9 +66,13 @@
 </template>
 
 <style>
-.m-navbar{
-  height: 70px;
-}
+  .m-navbar{
+    height: 70px;
+  }
+  .banner-logo{
+    width: 50px;
+  }
+
   .navbar-brand{
     margin-right: 30px;
     width: 300px;
