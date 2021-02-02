@@ -57,9 +57,9 @@
                   <div class="dataview-columns-container">
                       <ul class="list-group">
                           <li class="list-group-item" v-for="item in dataView.columns" :key="item.id" v-bind:value="item.id" >
-                              <div style="display: block" class="">{{item.column.columnName}}</div>
-                              <label style="margin-right: 4px;" v-bind:for="'chkuseSelect' + item.column.id">Als Egebnis</label>
-                              <input v-bind:id="'chkuseSelect' + item.column.id" style="margin-right: 9px;" type="checkbox" v-model="item.useSelect">
+                              <div style="display: block" class="">{{item.sourceColumn.columnName}}</div>
+                              <label style="margin-right: 4px;" v-bind:for="'chkuseSelect' + item.sourceColumn.id">Als Egebnis</label>
+                              <input v-bind:id="'chkuseSelect' + item.sourceColumn.id" style="margin-right: 9px;" type="checkbox" v-model="item.useAsSelect">
                               <label style="margin-right: 4px;">Egebnis Typ</label>
                               <select v-model="item.selectType">
                                   <option value="NORMAL">Normal</option>
@@ -79,7 +79,7 @@
           </div>
           <div class="modal-footer">
               <span style="display: inline-block; width: 50%; max-height: 50px; overflow: auto; color: black;">{{dataView}}</span>
-            <button type="button" v-on:click="addSelectedColumns" :disabled="isAddDataViewDisabled" class="btn btn-primary">Anwenden</button>
+            <button type="button" v-on:click="doneSelectedView" :disabled="isAddDataViewDisabled" class="btn btn-primary">Anwenden</button>
           </div>
 
         </div>
@@ -205,6 +205,8 @@ label.item-title{
 <script>
 //import { dataSettingsService } from '../../services/datasettings.service';
 
+import { uuidv4 } from '../../helpers/utils';
+
 export default {
     name: 'DataViewSelectDialog',
     data () {
@@ -212,7 +214,7 @@ export default {
           errmessage: "",
           okmessage: "",
           selectedDataSources: [],
-          dataView: {"name": "", "columns": []},
+          dataView:  {"id": uuidv4(), "name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []},
           currentUpdateDateTime: new Date()
         }
     },
@@ -222,7 +224,7 @@ export default {
         immediate: true,
         handler (val, oldVal) {
           if(val && !oldVal){
-            this.dataView =  {"name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
+            this.dataView =  {"id": uuidv4(), "name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
 
           }
         }
@@ -246,9 +248,7 @@ export default {
       addDataSource(item){
         this.selectedDataSources.push(item)
       },
-      addSelectedColumns(){
-
-
+      doneSelectedView(){
         this.$emit('dataViewSelected', this.dataView)
 
       },
@@ -259,12 +259,12 @@ export default {
         this.selectedDataSources = this.selectedDataSources.filter(item => item.id != removeItem.id)
       },
       isColumnSelected(searchItem){
-        var found = this.dataView.columns.filter(item => item.column.id == searchItem.id)
+        var found = this.dataView.columns.filter(item => item.sourceColumn.id == searchItem.id)
         return found.length > 0;
       },
       selectColumn(event, column){
         if(event.target.checked){
-            this.dataView.columns.push({"column": column, "useSelect": true, "selectType": "NORMAL"});
+            this.dataView.columns.push({"sourceColumn": column, "useAsSelect": true, "selectType": "NORMAL"});
         }
         else{
             this.dataView.columns = this.dataView.columns.filter(item => item.id != column.id)
@@ -276,7 +276,7 @@ export default {
         for(var i in selectedItem.columns){
             idList.push(selectedItem.columns[i].id)
         }
-        this.dataView.columns = this.dataView.columns.filter(item => idList.indexOf(item.column.id) == -1)
+        this.dataView.columns = this.dataView.columns.filter(item => idList.indexOf(item.sourceColumn.id) == -1)
         if(event.target.checked){
             for(i in selectedItem.columns){
                 this.selectColumn(event, selectedItem.columns[i])
@@ -289,7 +289,6 @@ export default {
 
     },
     created () {
-
 
     }
 };

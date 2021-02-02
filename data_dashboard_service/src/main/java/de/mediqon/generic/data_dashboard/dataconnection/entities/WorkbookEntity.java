@@ -33,6 +33,11 @@ public class WorkbookEntity extends BaseEntity {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookDataSourceEntity> dataSources = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "workbook", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<WorkbookDataViewEntity> dataViews = new ArrayList<>();
+
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
@@ -82,6 +87,20 @@ public class WorkbookEntity extends BaseEntity {
     public void addDataSource(WorkbookDataSourceEntity dataSource) {
         dataSource.setWorkbook(this);
         this.dataSources.add(dataSource);
+    }
+
+    public List<WorkbookDataViewEntity> getDataViews() {
+        return dataViews;
+    }
+
+    public void setDataViews(List<WorkbookDataViewEntity> dataViews) {
+        this.dataViews = dataViews;
+        this.dataViews.forEach(v -> v.setWorkbook(this));
+    }
+
+    public void addDataView(WorkbookDataViewEntity dataViewEntity) {
+        dataViewEntity.setWorkbook(this);
+        this.dataViews.add(dataViewEntity);
     }
 
     public void setCreatedAt(Date createdAt) {

@@ -59,7 +59,7 @@
                       <button type="button" class="btn add-source-button" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/database_add.png" width="20" /></button>
                   </div>
                   <WorkbookDataSourceItem  v-for="item in workbook.dataSources" :key="item.table"
-                                           v-on:removeWorkbookItem="removeWorkbookItem" v-bind:workbookDataSourceItem="item">
+                                           v-on:removeDataSource="removeDataSource" v-bind:workbookDataSourceItem="item">
 
                   </WorkbookDataSourceItem>
 
@@ -71,7 +71,9 @@
                   <div class="datasource-toolbar">
                       <button type="button" class="btn add-source-button" v-on:click="showSelectViewDialog()"><img src="@/assets/images/dataview.png" width="20" /></button>
                   </div>
-                Data Views
+
+                <WorkbookDataViewItem v-for="item in workbook.dataViews" :key="item.id" v-bind:workbookDataView="item" v-on:removeDataView="removeDataView"></WorkbookDataViewItem>
+
               </div>
               <div class="tab-pane fade tabs-content" id="presentationtabcontent" role="tabpanel" aria-labelledby="presentationtab">
                   presentation
@@ -98,7 +100,8 @@
 
     </DataSourceSelectDialog>
 
-    <DataViewSelectDialog v-bind:isDialogVisible="getSelectViewDialogVisible" v-on:close="closeSelectViewDialog" v-bind:dataSources="getDataSources">
+    <DataViewSelectDialog v-bind:isDialogVisible="getSelectViewDialogVisible" v-on:close="closeSelectViewDialog"
+                          v-on:dataViewSelected="addDataView" v-bind:dataSources="getDataSources">
 
     </DataViewSelectDialog>
 
@@ -153,6 +156,7 @@ import { workbookService } from '../../../../services/workbook.service';
 import DataSourceSelectDialog from '../../../../components/workbook/DataSourceSelectDialog.vue';
 import WorkbookDataSourceItem from '../../../../components/workbook/WorkbookDataSourceItem.vue';
 import DataViewSelectDialog from '../../../../components/workbook/DataViewSelectDialog.vue';
+import WorkbookDataViewItem from '../../../../components/workbook/WorkbookDataViewItem.vue';
 
 //import router from '../../../../router'
 import $ from 'jquery'
@@ -169,13 +173,14 @@ export default {
           isSelectViewDialogVisible: false,
           currentUpdateDateTime: new Date(),
           customers: [],
-          workbook: {"customerId": false, "dataSources": [], "description": "", "id": false, "name" : false, }
+          workbook: {"customerId": false, "dataSources": [], "dataViews": [], "description": "", "id": false, "name" : false, }
         }
     },
     components:{
         DataSourceSelectDialog,
         WorkbookDataSourceItem,
-        DataViewSelectDialog
+        DataViewSelectDialog,
+        WorkbookDataViewItem
     },
     props:["inBox", "clone"],
     computed: {
@@ -329,6 +334,13 @@ export default {
         $('#datasourcestab').tab('show')
 
       },
+      addDataView(item){
+        this.workbook.dataViews.push(item)
+        this.isSelectViewDialogVisible = false
+        this.currentUpdateDateTime = new Date()
+
+        $('#dataviewstab').tab('show')
+      },
       getColumnLabel(item){
         return item.name + " : " + item.type + "(" + item.size + ")"
       },
@@ -352,8 +364,12 @@ export default {
         this.currentUpdateDateTime = new Date()
 
       },
-      removeWorkbookItem(removeItem){
-        this.workbook.dataSources = this.workbook.dataSources.filter(item => ((item.table != removeItem.table) || (item.connection.id != removeItem.connection.id)))
+      removeDataSource(removeItem){
+        this.workbook.dataSources = this.workbook.dataSources.filter(item => item.id != removeItem.id)
+
+      },
+      removeDataView(removeItem){
+        this.workbook.dataViews = this.workbook.dataViews.filter(item => item.id != removeItem.id)
 
       }
 

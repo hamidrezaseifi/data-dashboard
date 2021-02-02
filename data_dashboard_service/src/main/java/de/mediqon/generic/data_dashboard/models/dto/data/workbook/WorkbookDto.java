@@ -2,6 +2,7 @@ package de.mediqon.generic.data_dashboard.models.dto.data.workbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookDataViewEntity;
 import de.mediqon.generic.data_dashboard.entities.CustomerEntity;
 import de.mediqon.generic.data_dashboard.models.base.BaseDto;
 import io.micronaut.core.annotation.Introspected;
@@ -25,12 +26,13 @@ public class WorkbookDto extends BaseDto {
 
     protected Integer status = 1;
 
-    private List<WorkbookDataSourceDto> dataSources = new ArrayList<>();
-
     private UUID customerId;
 
     private String customerName;
 
+    private List<WorkbookDataSourceDto> dataSources = new ArrayList<>();
+
+    private List<WorkbookDataViewDto> dataViews = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -66,6 +68,18 @@ public class WorkbookDto extends BaseDto {
 
     public void addDataSource(WorkbookDataSourceDto dataSource) {
         this.dataSources.add(dataSource);
+    }
+
+    public List<WorkbookDataViewDto> getDataViews() {
+        return dataViews;
+    }
+
+    public void setDataViews(List<WorkbookDataViewDto> dataViews) {
+        this.dataViews = dataViews;
+    }
+
+    public void addDataView(WorkbookDataViewDto dataView) {
+        this.dataViews.add(dataView);
     }
 
     public UUID getCustomerId() {

@@ -210,6 +210,7 @@ textarea.query {
 </style>
 <script>
 import { dataSettingsService } from '../../services/datasettings.service';
+import { uuidv4 } from '../../helpers/utils';
 
 export default {
     name: 'NewConnection',
@@ -232,7 +233,7 @@ export default {
         immediate: true,
         handler (val, oldVal) {
           if(val && !oldVal){
-            this.dataSource =  {"name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
+            this.dataSource =  {"id": uuidv4(), "name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
             this.tableList = []
             this.columnList = []
 
@@ -366,7 +367,6 @@ export default {
 
     },
     created () {
-
 
     }
 };

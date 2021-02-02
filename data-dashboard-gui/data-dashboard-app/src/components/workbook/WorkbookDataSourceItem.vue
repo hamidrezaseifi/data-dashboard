@@ -124,7 +124,7 @@ export default {
       },
       removeWorkbookItem(){
 
-            this.$emit('removeWorkbookItem', this.workbookDataSourceItem)
+            this.$emit('removeDataSource', this.workbookDataSourceItem)
       }
 
     },
