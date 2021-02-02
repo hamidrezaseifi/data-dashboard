@@ -69,7 +69,7 @@
               </div>
               <div class="tab-pane fade tabs-content" id="dataviewstabcontent" role="tabpanel" aria-labelledby="dataviewstab">
                   <div class="datasource-toolbar">
-                      <button type="button" class="btn add-source-button" v-on:click="showSelectSourceDialog()"><img src="@/assets/images/dataview.png" width="20" /></button>
+                      <button type="button" class="btn add-source-button" v-on:click="showSelectViewDialog()"><img src="@/assets/images/dataview.png" width="20" /></button>
                   </div>
                 Data Views
               </div>
@@ -82,7 +82,7 @@
           </div>
 
           <div class="form-group" style="margin-top: 10px;">
-            <span style="display: inline-block; width: 50%;">{{workbook}}</span>
+            <span style="display: inline-block; width: 50%; max-height: 50px; overflow: auto;">{{workbook}}</span>
             <span v-if="errmessage != ''" class="alert alert-danger" style="float:left; max-width: calc(100% - 300px);" v-html="errmessage"></span>
             <span v-if="okmessage != ''" class="alert alert-success" style="float:left; max-width: calc(100% - 300px);" v-html="okmessage"></span>
             <button type="button" class="btn btn-primary actionbutton"  v-bind:disabled="isSaveButtonDisabled" v-on:click="saveWorkbook" style="float:right;">{{saveButtonName}}</button>
@@ -97,6 +97,10 @@
                             v-bind:isDialogVisible="getSelectSourceDialogVisible" v-on:close="closeSelectSourceDialog">
 
     </DataSourceSelectDialog>
+
+    <DataViewSelectDialog v-bind:isDialogVisible="getSelectViewDialogVisible" v-on:close="closeSelectViewDialog" v-bind:dataSources="getDataSources">
+
+    </DataViewSelectDialog>
 
   </div>
 </template>
@@ -146,9 +150,9 @@ input.form-control , select.form-control {
 <script>
 //import { dataSettingsService } from '../../../../services/datasettings.service';
 import { workbookService } from '../../../../services/workbook.service';
-import DataSourceSelectDialog from '../../../../components/data/DataSourceSelectDialog.vue';
-import WorkbookDataSourceItem from '../../../../components/data/WorkbookDataSourceItem.vue';
-
+import DataSourceSelectDialog from '../../../../components/workbook/DataSourceSelectDialog.vue';
+import WorkbookDataSourceItem from '../../../../components/workbook/WorkbookDataSourceItem.vue';
+import DataViewSelectDialog from '../../../../components/workbook/DataViewSelectDialog.vue';
 
 //import router from '../../../../router'
 import $ from 'jquery'
@@ -162,6 +166,7 @@ export default {
           okmessage: "",
           id: false,
           isSelectSourceDialogVisible: false,
+          isSelectViewDialogVisible: false,
           currentUpdateDateTime: new Date(),
           customers: [],
           workbook: {"customerId": false, "dataSources": [], "description": "", "id": false, "name" : false, }
@@ -169,7 +174,8 @@ export default {
     },
     components:{
         DataSourceSelectDialog,
-        WorkbookDataSourceItem
+        WorkbookDataSourceItem,
+        DataViewSelectDialog
     },
     props:["inBox", "clone"],
     computed: {
@@ -215,9 +221,17 @@ export default {
         this.currentUpdateDateTime
         return this.isSelectSourceDialogVisible
       },
+      getSelectViewDialogVisible: function (){
+        this.currentUpdateDateTime
+        return this.isSelectViewDialogVisible
+      },
       getConnections: function (){
         this.currentUpdateDateTime
         return this.connections
+      },
+      getDataSources: function (){
+        this.currentUpdateDateTime
+        return this.workbook.dataSources
       }
     },
     methods: {
@@ -323,8 +337,18 @@ export default {
         this.currentUpdateDateTime = new Date()
 
       },
+      showSelectViewDialog(){
+        this.isSelectViewDialogVisible = true
+        this.currentUpdateDateTime = new Date()
+
+      },
       closeSelectSourceDialog(){
         this.isSelectSourceDialogVisible = false
+        this.currentUpdateDateTime = new Date()
+
+      },
+      closeSelectViewDialog(){
+        this.isSelectViewDialogVisible = false
         this.currentUpdateDateTime = new Date()
 
       },

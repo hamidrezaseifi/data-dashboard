@@ -12,7 +12,7 @@
           </div>
           <div class="modal-body">
               <div class="form-group">
-                  <label for="connectionlist" class="item-title">Name</label>
+                  <label for="datasourcename" class="item-title">Name</label>
                   <input class="form-control" id="datasourcename" v-model="dataSource.name" />
               </div>
               <div class="form-group">
