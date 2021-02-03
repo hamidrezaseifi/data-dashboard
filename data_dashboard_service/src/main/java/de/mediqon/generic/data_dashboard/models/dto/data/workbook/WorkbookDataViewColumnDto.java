@@ -15,7 +15,9 @@ import java.util.Date;
 @Introspected
 public class WorkbookDataViewColumnDto extends BaseDto {
 
-     private Boolean useAsSelect;
+    private String label;
+
+    private Boolean useAsSelect;
 
     private String selectType;
 
@@ -45,5 +47,11 @@ public class WorkbookDataViewColumnDto extends BaseDto {
         this.sourceColumn = sourceColumn;
     }
 
+    public String getLabel() {
+        return label;
+    }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

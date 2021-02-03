@@ -10,6 +10,9 @@ import java.util.UUID;
 @Table(name = "workbook_dataview_columns")
 public class WorkbookDataViewColumnEntity extends BaseEntity {
 
+    @Column(name = "label")
+    private String label;
+
     @Column(name = "user_as_select")
     private Boolean useAsSelect;
 
@@ -28,6 +31,14 @@ public class WorkbookDataViewColumnEntity extends BaseEntity {
     @JoinColumn(name = "dataview_id", nullable = false)
     private WorkbookDataViewEntity workbookDataView;
 
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public Boolean getUseAsSelect() {
         return useAsSelect;

@@ -31,6 +31,7 @@ public class WorkbookDataViewColumnAdapter
         WorkbookDataViewColumnEntity model = new WorkbookDataViewColumnEntity();
 
         model.setSelectType(dto.getSelectType());
+        model.setLabel(dto.getLabel());
         model.setSourceColumn(workbookDataSourceColumnRepository.getById(dto.getSourceColumn().getId()).get());
         model.setUseAsSelect(dto.getUseAsSelect());
         model.setVersion(dto.getVersion());
@@ -44,6 +45,7 @@ public class WorkbookDataViewColumnAdapter
         WorkbookDataViewColumnDto dto = new WorkbookDataViewColumnDto();
 
         dto.setSelectType(model.getSelectType());
+        dto.setLabel(model.getLabel());
         dto.setSourceColumn(workbookDataSourceColumnAdapter.toDto(model.getSourceColumn()));
         dto.setUseAsSelect(model.getUseAsSelect());
         dto.setVersion(model.getVersion());

@@ -12,8 +12,8 @@
       </div>
       <div class="card-body" style="padding: 0;">
           <ul  class="list-group">
-              <li class="list-group-item" v-for="item in getWorkbookDataViewItem.columns" :key="item.id" v-bind:value="item.id">
-                  <div style="display: block" class="">{{item.sourceColumn.columnName}}</div>
+              <li class="list-group-item dataview-column-item" v-for="item in getWorkbookDataViewItem.columns" :key="item.id" v-bind:value="item.id">
+                  <div style="display: block" class="">{{item.label}} ({{item.sourceColumn.columnName}})</div>
                   <label style="margin-right: 4px;" v-bind:for="'chkuseSelect' + item.sourceColumn.id">Als Egebnis</label>
                   <input v-bind:id="'chkuseSelect' + item.sourceColumn.id" style="margin-right: 9px;" disabled type="checkbox" v-model="item.useAsSelect">
                   <label style="margin-right: 4px;">Egebnis Typ: {{item.selectType}}</label>
@@ -57,8 +57,8 @@
 }
 
 .workbook-item .card-body {
-    height: 300px;
-    max-height: 300px;
+    height: calc(100% - 40px);
+    max-height: calc(100% - 40px);
     overflow: auto;
     padding: 0;
 }
@@ -85,6 +85,9 @@ div.connectiondetail{
     margin-bottom: 5px;
 }
 
+.list-group-item.dataview-column-item{
+    padding: 6px;
+}
 </style>
 <script>
 

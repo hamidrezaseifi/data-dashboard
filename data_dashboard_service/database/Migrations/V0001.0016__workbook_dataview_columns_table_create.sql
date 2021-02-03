@@ -3,8 +3,9 @@ CREATE TABLE public.workbook_dataview_columns (
 	id uuid NOT NULL,
 	dataview_id uuid NOT NULL,
 	column_id uuid NOT NULL,
+	label varchar(200) NOT NULL,
 	user_as_select boolean NOT NULL,
-	select_type varchar(200) NOT NULL,
+	select_type varchar(20) NOT NULL,
 	"version" int4 NOT NULL DEFAULT 1,
 	created_at timestamp NOT NULL DEFAULT timezone('utc'::text, now()),
 	CONSTRAINT workbook_dataview_columns_pkey PRIMARY KEY (id)

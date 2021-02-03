@@ -57,7 +57,13 @@
                   <div class="dataview-columns-container">
                       <ul class="list-group">
                           <li class="list-group-item" v-for="item in dataView.columns" :key="item.id" v-bind:value="item.id" >
-                              <div style="display: block" class="">{{item.sourceColumn.columnName}}</div>
+                              <div style="display: block" class="">
+                                  <label>{{item.sourceColumn.columnName}}</label>
+                              </div>
+                              <div style="display: block" class="">
+                                  <label v-bind:for="'txtlabel' + item.sourceColumn.id" style="width: 40px;">Label</label>
+                                  <input v-bind:id="'txtlabel' + item.sourceColumn.id" style="width: calc(100% - 40px)" v-model="item.label" >
+                              </div>
                               <label style="margin-right: 4px;" v-bind:for="'chkuseSelect' + item.sourceColumn.id">Als Egebnis</label>
                               <input v-bind:id="'chkuseSelect' + item.sourceColumn.id" style="margin-right: 9px;" type="checkbox" v-model="item.useAsSelect">
                               <label style="margin-right: 4px;">Egebnis Typ</label>
@@ -78,7 +84,7 @@
 
           </div>
           <div class="modal-footer">
-              <span style="display: inline-block; width: 50%; max-height: 50px; overflow: auto; color: black;">{{dataView}}</span>
+
             <button type="button" v-on:click="doneSelectedView" :disabled="isAddDataViewDisabled" class="btn btn-primary">Anwenden</button>
           </div>
 
@@ -225,14 +231,14 @@ export default {
         handler (val, oldVal) {
           if(val && !oldVal){
             this.dataView =  {"id": uuidv4(), "name": "", "connectionId": false, "connectionName" : "", "dataSourceType": "TABLE", "query": "", "table": false, "columns": []}
-
+            this.selectedDataSources = [];
           }
         }
       }
     },
     computed: {
       saveButtonName: function (){
-        return this.isNew() ? "Erstellen" : "Speiren"
+        return this.isNew() ? "Erstellen" : "Speichren"
       },
       getDialogVisible: function (){
         this.currentUpdateDateTime
@@ -264,7 +270,7 @@ export default {
       },
       selectColumn(event, column){
         if(event.target.checked){
-            this.dataView.columns.push({"sourceColumn": column, "useAsSelect": true, "selectType": "NORMAL"});
+            this.dataView.columns.push({"sourceColumn": column, "useAsSelect": true, "selectType": "NORMAL", "label" : column.columnName});
         }
         else{
             this.dataView.columns = this.dataView.columns.filter(item => item.id != column.id)

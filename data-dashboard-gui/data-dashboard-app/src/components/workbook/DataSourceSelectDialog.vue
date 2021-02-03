@@ -245,7 +245,7 @@ export default {
     },
     computed: {
       saveButtonName: function (){
-        return this.isNew() ? "Erstellen" : "Speiren"
+        return this.isNew() ? "Erstellen" : "Speichren"
       },
       filterTableList: function (){
         this.currentUpdateDateTime
