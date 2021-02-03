@@ -34,6 +34,8 @@ public class WorkbookDto extends BaseDto {
 
     private List<WorkbookDataViewDto> dataViews = new ArrayList<>();
 
+    private List<WorkbookFilterDto> filters = new ArrayList<>();
+
     public String getName() {
         return name;
     }
@@ -96,5 +98,13 @@ public class WorkbookDto extends BaseDto {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public List<WorkbookFilterDto> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<WorkbookFilterDto> filters) {
+        this.filters = filters;
     }
 }

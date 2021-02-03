@@ -1,9 +1,6 @@
 package de.mediqon.generic.data_dashboard.adapters.impl.workbook;
 
-import de.mediqon.generic.data_dashboard.adapters.IWorkbookAdapter;
-import de.mediqon.generic.data_dashboard.adapters.IWorkbookDataSourceAdapter;
-import de.mediqon.generic.data_dashboard.adapters.IWorkbookDataViewAdapter;
-import de.mediqon.generic.data_dashboard.adapters.IWorkbookDataViewColumnAdapter;
+import de.mediqon.generic.data_dashboard.adapters.*;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookEntity;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookDto;
 import de.mediqon.generic.data_dashboard.services.ICustomerService;
@@ -18,13 +15,16 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
     private final ICustomerService customerService;
     private final IWorkbookDataSourceAdapter workbookDataSourceAdapter;
     private final IWorkbookDataViewAdapter workbookDataViewAdapter;
+    private final IWorkbookFilterAdapter workbookFilterAdapter;
 
     public WorkbookAdapter(ICustomerService customerService,
                            IWorkbookDataSourceAdapter workbookDataSourceAdapter,
-                           IWorkbookDataViewAdapter workbookDataViewAdapter) {
+                           IWorkbookDataViewAdapter workbookDataViewAdapter,
+                           IWorkbookFilterAdapter workbookFilterAdapter) {
         this.customerService = customerService;
         this.workbookDataSourceAdapter = workbookDataSourceAdapter;
         this.workbookDataViewAdapter = workbookDataViewAdapter;
+        this.workbookFilterAdapter = workbookFilterAdapter;
     }
 
     @Override
@@ -38,6 +38,7 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
         model.setCustomer(customerService.getById(dto.getCustomerId()).get());
         model.setDataSources(workbookDataSourceAdapter.fromDtoList(dto.getDataSources()));
         model.setDataViews(workbookDataViewAdapter.fromDtoList(dto.getDataViews()));
+        model.setFilters(workbookFilterAdapter.fromDtoList(dto.getFilters()));
 
         return model;
     }
@@ -55,6 +56,7 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
         dto.setCustomerName(model.getCustomer().getName());
         dto.setDataSources(workbookDataSourceAdapter.toDtoList(model.getDataSources()));
         dto.setDataViews(workbookDataViewAdapter.toDtoList(model.getDataViews()));
+        dto.setFilters(workbookFilterAdapter.toDtoList(model.getFilters()));
 
         return dto;
     }

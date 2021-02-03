@@ -37,6 +37,10 @@ public class WorkbookEntity extends BaseEntity {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookDataViewEntity> dataViews = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "workbook", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<WorkbookFilterEntity> filters = new ArrayList<>();
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -101,6 +105,20 @@ public class WorkbookEntity extends BaseEntity {
     public void addDataView(WorkbookDataViewEntity dataViewEntity) {
         dataViewEntity.setWorkbook(this);
         this.dataViews.add(dataViewEntity);
+    }
+
+    public List<WorkbookFilterEntity> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<WorkbookFilterEntity> filters) {
+        this.filters = filters;
+        this.filters.forEach(f -> f.setWorkbook(this));
+    }
+
+    public void addFilter(WorkbookFilterEntity filter) {
+        filter.setWorkbook(this);
+        this.filters.add(filter);
     }
 
     public void setCreatedAt(Date createdAt) {
