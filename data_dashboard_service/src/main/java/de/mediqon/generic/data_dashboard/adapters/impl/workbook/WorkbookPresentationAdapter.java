@@ -8,6 +8,7 @@ import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookPresent
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookPresentationEntity;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookPresentationDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookPresentationDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookDataSourceType;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookPresentationType;
 import de.mediqon.generic.data_dashboard.repositories.IWorkbookDataViewRepository;
 import de.mediqon.generic.data_dashboard_common.adapters.ModelDtoAdapterBase;
@@ -21,15 +22,12 @@ public class WorkbookPresentationAdapter
 
 
     private final IWorkbookPresentationPropertyAdapter workbookPresentationPropertyAdapter;
-    private final IWorkbookDataViewRepository workbookDataViewRepository;
-    private final IWorkbookDataViewAdapter workbookDataViewAdapter;
+    private final IWorkbookFilterAdapter workbookFilterAdapter;
 
     public WorkbookPresentationAdapter(IWorkbookPresentationPropertyAdapter workbookPresentationPropertyAdapter,
-                                       IWorkbookDataViewRepository workbookDataViewRepository,
-                                       IWorkbookDataViewAdapter workbookDataViewAdapter) {
+                                       IWorkbookFilterAdapter workbookFilterAdapter) {
         this.workbookPresentationPropertyAdapter = workbookPresentationPropertyAdapter;
-        this.workbookDataViewRepository = workbookDataViewRepository;
-        this.workbookDataViewAdapter = workbookDataViewAdapter;
+        this.workbookFilterAdapter = workbookFilterAdapter;
     }
 
     @Override
@@ -43,7 +41,9 @@ public class WorkbookPresentationAdapter
         model.setPresentationType(dto.getPresentationType().getId());
         model.setPresentationStyle(dto.getPresentationStyle());
         model.setProperties(workbookPresentationPropertyAdapter.fromDtoList(dto.getProperties()));
-        model.setDataView(workbookDataViewRepository.getById(dto.getDataView().getId()).get());
+        model.setDataSourceType(dto.getDataSourceType().getId());
+        model.setDataSourceId(dto.getDataSourceId());
+        model.setFilters(workbookFilterAdapter.fromDtoList(dto.getFilters()));
 
         return model;
     }
@@ -59,7 +59,9 @@ public class WorkbookPresentationAdapter
         dto.setPresentationType(EWorkbookPresentationType.fromId(model.getPresentationType()));
         dto.setPresentationStyle(model.getPresentationStyle());
         dto.setProperties(workbookPresentationPropertyAdapter.toDtoList(model.getProperties()));
-        dto.setDataView(workbookDataViewAdapter.toDto(model.getDataView()));
+        dto.setDataSourceType(EWorkbookDataSourceType.fromId(model.getDataSourceType()));
+        dto.setDataSourceId(model.getDataSourceId());
+        dto.setFilters(workbookFilterAdapter.toDtoList(model.getFilters()));
 
         return dto;
     }

@@ -7,6 +7,7 @@ import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookEntity;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookPresentationPropertyEntity;
 import de.mediqon.generic.data_dashboard.entities.base.BaseEntity;
 import de.mediqon.generic.data_dashboard.models.base.BaseDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookDataSourceType;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookPresentationType;
 import io.micronaut.core.annotation.Introspected;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonIgnoreProperties({})
@@ -26,11 +28,15 @@ public class WorkbookPresentationDto extends BaseDto {
 
     private String presentationStyle;
 
+    private EWorkbookDataSourceType dataSourceType;
+
+    private UUID dataSourceId;
+
     protected Integer status = 1;
 
-    private WorkbookDataViewDto dataView;
-
     private List<WorkbookPresentationPropertyDto> properties = new ArrayList<>();
+
+    private List<WorkbookFilterDto> filters = new ArrayList<>();
 
 
     public String getName() {
@@ -57,12 +63,20 @@ public class WorkbookPresentationDto extends BaseDto {
         this.presentationStyle = presentationStyle;
     }
 
-    public WorkbookDataViewDto getDataView() {
-        return dataView;
+    public EWorkbookDataSourceType getDataSourceType() {
+        return dataSourceType;
     }
 
-    public void setDataView(WorkbookDataViewDto dataView) {
-        this.dataView = dataView;
+    public void setDataSourceType(EWorkbookDataSourceType dataSourceType) {
+        this.dataSourceType = dataSourceType;
+    }
+
+    public UUID getDataSourceId() {
+        return dataSourceId;
+    }
+
+    public void setDataSourceId(UUID dataSourceId) {
+        this.dataSourceId = dataSourceId;
     }
 
     public Integer getStatus() {
@@ -79,5 +93,13 @@ public class WorkbookPresentationDto extends BaseDto {
 
     public void setProperties(List<WorkbookPresentationPropertyDto> properties) {
         this.properties = properties;
+    }
+
+    public List<WorkbookFilterDto> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<WorkbookFilterDto> filters) {
+        this.filters = filters;
     }
 }

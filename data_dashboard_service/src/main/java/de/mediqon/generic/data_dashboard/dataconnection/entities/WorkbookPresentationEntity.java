@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "workbook_presentations")
@@ -22,6 +23,12 @@ public class WorkbookPresentationEntity extends BaseEntity {
     @Column(name = "presentation_style")
     private String presentationStyle;
 
+    @Column(name = "data_source_type")
+    private String dataSourceType;
+
+    @Column(name = "data_source_id")
+    private UUID dataSourceId;
+
     @Column(name = "status")
     protected Integer status = 1;
 
@@ -35,13 +42,17 @@ public class WorkbookPresentationEntity extends BaseEntity {
     @JoinColumn(name = "workbook_id", nullable = false)
     private WorkbookEntity workbook;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dataview_id", nullable = false)
-    private WorkbookDataViewEntity dataView;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "presentation", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookPresentationPropertyEntity> properties = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="workbook_presentation_filters",
+            joinColumns = @JoinColumn( name="presentation_id"),
+            inverseJoinColumns = @JoinColumn( name="filter_id")
+    )
+    private List<WorkbookFilterEntity> filters = new ArrayList<>();
 
 
     public String getName() {
@@ -68,20 +79,28 @@ public class WorkbookPresentationEntity extends BaseEntity {
         this.presentationStyle = presentationStyle;
     }
 
+    public String getDataSourceType() {
+        return dataSourceType;
+    }
+
+    public void setDataSourceType(String dataSourceType) {
+        this.dataSourceType = dataSourceType;
+    }
+
+    public UUID getDataSourceId() {
+        return dataSourceId;
+    }
+
+    public void setDataSourceId(UUID dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
     public WorkbookEntity getWorkbook() {
         return workbook;
     }
 
     public void setWorkbook(WorkbookEntity workbook) {
         this.workbook = workbook;
-    }
-
-    public WorkbookDataViewEntity getDataView() {
-        return dataView;
-    }
-
-    public void setDataView(WorkbookDataViewEntity dataView) {
-        this.dataView = dataView;
     }
 
     public Integer getStatus() {
@@ -117,8 +136,16 @@ public class WorkbookPresentationEntity extends BaseEntity {
         this.properties.forEach(p -> p.setPresentation(this));
     }
 
-    public void affProperty(WorkbookPresentationPropertyEntity property) {
+    public void addProperty(WorkbookPresentationPropertyEntity property) {
         property.setPresentation(this);
         this.properties.add(property);
+    }
+
+    public List<WorkbookFilterEntity> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<WorkbookFilterEntity> filters) {
+        this.filters = filters;
     }
 }

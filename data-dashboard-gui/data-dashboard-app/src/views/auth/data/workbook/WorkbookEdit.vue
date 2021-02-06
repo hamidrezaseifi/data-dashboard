@@ -117,7 +117,8 @@
 
     <PresentationSelectDialog v-bind:isDialogVisible="getSelectPresentationDialogVisible" v-on:close="closeSelectPresentationDialog"
                       v-on:presentationSelected="addPresentation" v-bind:dataViews="getDataViews"
-                      v-bind:presentationTypes="getPresentationTypes" v-bind:presentationStyles="getPresentationStyles" ></PresentationSelectDialog>
+                      v-bind:presentationTypes="getPresentationTypes" v-bind:presentationStyles="getPresentationStyles"
+                      v-bind:filters="getWorkbookFilters"></PresentationSelectDialog>
 
 
 
@@ -279,6 +280,10 @@ export default {
       getDataViews: function (){
         this.currentUpdateDateTime
         return this.workbook.dataViews
+      },
+      getWorkbookFilters: function (){
+        this.currentUpdateDateTime
+        return this.workbook.filters
       },
       getPresentationTypes: function (){
         this.currentUpdateDateTime

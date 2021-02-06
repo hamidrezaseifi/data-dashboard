@@ -157,7 +157,7 @@ export default {
           presentationLabelText : ""
         }
     },
-    props:["dataViews", "isDialogVisible", "presentationTypes", "presentationStyles"],
+    props:["dataViews", "filters", "isDialogVisible", "presentationTypes", "presentationStyles"],
     watch: {
       isDialogVisible: {
         immediate: true,
