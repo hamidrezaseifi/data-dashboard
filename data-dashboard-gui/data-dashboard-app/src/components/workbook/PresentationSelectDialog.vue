@@ -16,12 +16,25 @@
                   <input class="form-control" id="presentationname" v-model="presentation.name" />
               </div>
               <div class="form-group">
+                  <label for="dataSourceTypesselect" class="item-title">Datenquellentyp</label>
+                  <select id="dataSourceTypesselect" class="form-control" v-model="presentation.dataSourceType">
+                      <option>--- Datenquellentyp außwehlen ---</option>
+                      <option v-for="item in dataSourceTypes" :key="item.id" v-bind:value="item.id">{{item.title}}</option>
+                  </select>
+              </div>
+              <div class="form-group" v-if="presentation.dataSourceType === 'dataview'">
                   <label for="dataviewselect" class="item-title">Datenansicht</label>
-                  <select id="dataviewselect" class="form-control" v-on:click="selectDataView($event)">
+                  <select id="dataviewselect" class="form-control" v-on:click="selectDataView($event)" v-model="presentation.dataSourceId">
                       <option>--- Datenansicht außwehlen ---</option>
                       <option v-for="item in dataViews" :key="item.id" v-bind:value="item.id">{{item.name}}</option>
                   </select>
-
+              </div>
+              <div class="form-group" v-if="presentation.dataSourceType === 'filter'">
+                  <label for="filterselect" class="item-title">Filter</label>
+                  <select id="filterselect" class="form-control" v-on:click="selectFilter($event)" v-model="presentation.dataSourceId">
+                      <option>--- Filter außwehlen ---</option>
+                      <option v-for="item in filters" :key="item.id" v-bind:value="item.id">{{item.name}}</option>
+                  </select>
               </div>
               <div class="form-group">
                   <label for="presentationTypeselect" class="item-title">Präsentationstyp</label>
@@ -152,19 +165,20 @@ export default {
         return {
           errmessage: "",
           okmessage: "",
-          presentation:  {"id": uuidv4(), "name": "", "dataView": false, "presentationType": "", "presentationStyle": "", "properties": []},
+          selectedDataView: false,
+          presentation:  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": []},
           currentUpdateDateTime: new Date(),
           presentationLabelText : ""
         }
     },
-    props:["dataViews", "filters", "isDialogVisible", "presentationTypes", "presentationStyles"],
+    props:["dataViews", "filters", "isDialogVisible", "presentationTypes", "presentationStyles", "dataSourceTypes"],
     watch: {
       isDialogVisible: {
         immediate: true,
         handler (val, oldVal) {
 
           if(val && !oldVal){
-            this.presentation =  {"id": uuidv4(), "name": "", "dataView": false, "presentationType": "", "presentationStyle": "", "properties": []}
+            this.presentation =  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": []}
           }
         }
       }
@@ -185,7 +199,7 @@ export default {
       isDataViewSelected: function (){
         this.currentUpdateDateTime
 
-        return this.presentation.dataView != false
+        return this.selectedDataView
       },
 
 
@@ -195,8 +209,20 @@ export default {
         var id = event.target.value;
         for(var i in this.dataViews){
             if(this.dataViews[i].id == id){
-                this.presentation.dataView = this.dataViews[i]
+                this.selectedDataView = this.dataViews[i]
                 this.currentUpdateDateTime = new Date()
+                return
+            }
+        }
+
+      },
+      selectFilter(event){
+        var id = event.target.value;
+        for(var i in this.filters){
+            if(this.filters[i].id == id){
+                this.selectedFilter = this.filters[i]
+                this.currentUpdateDateTime = new Date()
+                return
             }
         }
 

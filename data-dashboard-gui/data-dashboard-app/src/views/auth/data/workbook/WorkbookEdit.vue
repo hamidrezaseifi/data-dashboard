@@ -118,7 +118,7 @@
     <PresentationSelectDialog v-bind:isDialogVisible="getSelectPresentationDialogVisible" v-on:close="closeSelectPresentationDialog"
                       v-on:presentationSelected="addPresentation" v-bind:dataViews="getDataViews"
                       v-bind:presentationTypes="getPresentationTypes" v-bind:presentationStyles="getPresentationStyles"
-                      v-bind:filters="getWorkbookFilters"></PresentationSelectDialog>
+                      v-bind:filters="getWorkbookFilters" v-bind:dataSourceTypes="getDataSourceTypes"></PresentationSelectDialog>
 
 
 
@@ -198,6 +198,7 @@ export default {
           customers: [],
           presentationTypes:[],
           presentationStyles:[],
+          dataSourceTypes: [],
           workbook: {"customerId": false, "dataSources": [], "dataViews": [], "filters":[], "presentations":[], "description": "", "id": false, "name" : false, }
         }
     },
@@ -292,6 +293,10 @@ export default {
       getPresentationStyles: function (){
         this.currentUpdateDateTime
         return this.presentationStyles
+      },
+      getDataSourceTypes: function (){
+        this.currentUpdateDateTime
+        return this.dataSourceTypes
       }
     },
     methods: {
@@ -306,6 +311,7 @@ export default {
             this.connections = data.connections;
             this.customers = data.customers;
             this.presentationStyles = data.presentationStyles;
+            this.dataSourceTypes = data.dataSourceTypes;
             this.presentationTypes = data.presentationTypes;
             this.workbook = data.workbook
             this.currentUpdateDateTime = new Date()
@@ -325,6 +331,7 @@ export default {
             this.connections = data.connections;
             this.customers = data.customers;
             this.presentationStyles = data.presentationStyles;
+            this.dataSourceTypes = data.dataSourceTypes;
             this.presentationTypes = data.presentationTypes;
             this.workbook = data.workbook
             this.currentUpdateDateTime = new Date()

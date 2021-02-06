@@ -14,6 +14,7 @@ import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.QueryColumnRequest;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookDataSourceType;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookPresentationType;
 import de.mediqon.generic.data_dashboard.services.ICustomerService;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
@@ -190,6 +191,7 @@ public class WorkbookController {
         map.put("customers", getAllCustomers());
         map.put("presentationTypes", EWorkbookPresentationType.getList());
         map.put("presentationStyles", Arrays.asList("Style1", "Style2", "Style3"));
+        map.put("dataSourceTypes", EWorkbookDataSourceType.getList());
 
 
         return map;
