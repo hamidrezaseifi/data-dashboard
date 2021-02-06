@@ -16,15 +16,18 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
     private final IWorkbookDataSourceAdapter workbookDataSourceAdapter;
     private final IWorkbookDataViewAdapter workbookDataViewAdapter;
     private final IWorkbookFilterAdapter workbookFilterAdapter;
+    private final IWorkbookPresentationAdapter workbookPresentationAdapter;
 
     public WorkbookAdapter(ICustomerService customerService,
                            IWorkbookDataSourceAdapter workbookDataSourceAdapter,
                            IWorkbookDataViewAdapter workbookDataViewAdapter,
-                           IWorkbookFilterAdapter workbookFilterAdapter) {
+                           IWorkbookFilterAdapter workbookFilterAdapter,
+                           IWorkbookPresentationAdapter workbookPresentationAdapter) {
         this.customerService = customerService;
         this.workbookDataSourceAdapter = workbookDataSourceAdapter;
         this.workbookDataViewAdapter = workbookDataViewAdapter;
         this.workbookFilterAdapter = workbookFilterAdapter;
+        this.workbookPresentationAdapter = workbookPresentationAdapter;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
         model.setDataSources(workbookDataSourceAdapter.fromDtoList(dto.getDataSources()));
         model.setDataViews(workbookDataViewAdapter.fromDtoList(dto.getDataViews()));
         model.setFilters(workbookFilterAdapter.fromDtoList(dto.getFilters()));
+        model.setPresentations(workbookPresentationAdapter.fromDtoList(dto.getPresentations()));
 
         return model;
     }
@@ -57,6 +61,7 @@ public class WorkbookAdapter extends ModelDtoAdapterBase<WorkbookEntity, Workboo
         dto.setDataSources(workbookDataSourceAdapter.toDtoList(model.getDataSources()));
         dto.setDataViews(workbookDataViewAdapter.toDtoList(model.getDataViews()));
         dto.setFilters(workbookFilterAdapter.toDtoList(model.getFilters()));
+        dto.setPresentations(workbookPresentationAdapter.toDtoList(model.getPresentations()));
 
         return dto;
     }

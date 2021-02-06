@@ -188,7 +188,8 @@ public class WorkbookController {
         map.put("workbook", workbookDto);
         map.put("connections", getConnectionDtoList());
         map.put("customers", getAllCustomers());
-        map.put("presentationType", EWorkbookPresentationType.getList());
+        map.put("presentationTypes", EWorkbookPresentationType.getList());
+        map.put("presentationStyles", Arrays.asList("Style1", "Style2", "Style3"));
 
 
         return map;

@@ -82,6 +82,8 @@
                   </div>
 
                   <WorkbookFilterItem v-for="item in workbook.filters" :key="item.id" v-bind:workbookFilter="item" v-on:removeFilter="removeFilter"></WorkbookFilterItem>
+
+                  <WorkbookPresentationItem v-for="item in workbook.presentations" :key="item.id" v-bind:presentation="item" v-on:removePresentation="removePresentation"></WorkbookPresentationItem>
               </div>
               <div class="tab-pane fade tabs-content" id="finaltabcontent" role="tabpanel" aria-labelledby="finaltab">
                   final
@@ -110,8 +112,14 @@
 
     </DataViewSelectDialog>
 
-      <DataFilterSelectDialog v-bind:isDialogVisible="getSelectFilterDialogVisible" v-on:close="closeSelectFilterDialog"
-                              v-on:filterSelected="addFilter" v-bind:dataViews="getDataViews"></DataFilterSelectDialog>
+    <FilterSelectDialog v-bind:isDialogVisible="getSelectFilterDialogVisible" v-on:close="closeSelectFilterDialog"
+                      v-on:filterSelected="addFilter" v-bind:dataViews="getDataViews"></FilterSelectDialog>
+
+    <PresentationSelectDialog v-bind:isDialogVisible="getSelectPresentationDialogVisible" v-on:close="closeSelectPresentationDialog"
+                      v-on:presentationSelected="addPresentation" v-bind:dataViews="getDataViews"
+                      v-bind:presentationTypes="getPresentationTypes" v-bind:presentationStyles="getPresentationStyles" ></PresentationSelectDialog>
+
+
 
   </div>
 </template>
@@ -165,8 +173,10 @@ import DataSourceSelectDialog from '../../../../components/workbook/DataSourceSe
 import WorkbookDataSourceItem from '../../../../components/workbook/WorkbookDataSourceItem.vue';
 import DataViewSelectDialog from '../../../../components/workbook/DataViewSelectDialog.vue';
 import WorkbookDataViewItem from '../../../../components/workbook/WorkbookDataViewItem.vue';
-import DataFilterSelectDialog from '../../../../components/workbook/DataFilterSelectDialog.vue';
+import FilterSelectDialog from '../../../../components/workbook/FilterSelectDialog.vue';
 import WorkbookFilterItem from '../../../../components/workbook/WorkbookFilterItem.vue';
+import PresentationSelectDialog from '../../../../components/workbook/PresentationSelectDialog.vue';
+import WorkbookPresentationItem from '../../../../components/workbook/WorkbookPresentationItem.vue';
 
 //import router from '../../../../router'
 import $ from 'jquery'
@@ -182,9 +192,12 @@ export default {
           isSelectSourceDialogVisible: false,
           isSelectViewDialogVisible: false,
           isSelectFilterDialogVisible: false,
+          idPresentationDialogVisible: false,
           currentUpdateDateTime: new Date(),
           customers: [],
-          workbook: {"customerId": false, "dataSources": [], "dataViews": [], "filters":[], "description": "", "id": false, "name" : false, }
+          presentationTypes:[],
+          presentationStyles:[],
+          workbook: {"customerId": false, "dataSources": [], "dataViews": [], "filters":[], "presentations":[], "description": "", "id": false, "name" : false, }
         }
     },
     components:{
@@ -192,8 +205,10 @@ export default {
         WorkbookDataSourceItem,
         DataViewSelectDialog,
         WorkbookDataViewItem,
-        DataFilterSelectDialog,
-        WorkbookFilterItem
+        FilterSelectDialog,
+        WorkbookFilterItem,
+        PresentationSelectDialog,
+        WorkbookPresentationItem
     },
     props:["inBox", "clone"],
     computed: {
@@ -248,6 +263,11 @@ export default {
 
         return this.isSelectFilterDialogVisible
       },
+      getSelectPresentationDialogVisible: function (){
+        this.currentUpdateDateTime
+
+        return this.idPresentationDialogVisible
+      },
       getConnections: function (){
         this.currentUpdateDateTime
         return this.connections
@@ -259,6 +279,14 @@ export default {
       getDataViews: function (){
         this.currentUpdateDateTime
         return this.workbook.dataViews
+      },
+      getPresentationTypes: function (){
+        this.currentUpdateDateTime
+        return this.presentationTypes
+      },
+      getPresentationStyles: function (){
+        this.currentUpdateDateTime
+        return this.presentationStyles
       }
     },
     methods: {
@@ -272,6 +300,8 @@ export default {
 
             this.connections = data.connections;
             this.customers = data.customers;
+            this.presentationStyles = data.presentationStyles;
+            this.presentationTypes = data.presentationTypes;
             this.workbook = data.workbook
             this.currentUpdateDateTime = new Date()
 
@@ -289,6 +319,8 @@ export default {
 
             this.connections = data.connections;
             this.customers = data.customers;
+            this.presentationStyles = data.presentationStyles;
+            this.presentationTypes = data.presentationTypes;
             this.workbook = data.workbook
             this.currentUpdateDateTime = new Date()
 
@@ -370,6 +402,13 @@ export default {
 
         $('#presentationtab').tab('show')
       },
+      addPresentation(item){
+        this.workbook.presentations.push(item)
+        this.idPresentationDialogVisible = false
+        this.currentUpdateDateTime = new Date()
+
+        $('#presentationtab').tab('show')
+      },
       getColumnLabel(item){
         return item.name + " : " + item.type + "(" + item.size + ")"
       },
@@ -389,6 +428,12 @@ export default {
         this.currentUpdateDateTime = new Date()
 
       },
+      showSelectPresentationDialog(){
+        this.idPresentationDialogVisible = true
+
+        this.currentUpdateDateTime = new Date()
+
+      },
       closeSelectSourceDialog(){
         this.isSelectSourceDialogVisible = false
         this.currentUpdateDateTime = new Date()
@@ -404,6 +449,11 @@ export default {
         this.currentUpdateDateTime = new Date()
 
       },
+      closeSelectPresentationDialog(){
+        this.idPresentationDialogVisible = false
+        this.currentUpdateDateTime = new Date()
+
+      },
       removeDataSource(removeItem){
         this.workbook.dataSources = this.workbook.dataSources.filter(item => item.id != removeItem.id)
 
@@ -414,6 +464,10 @@ export default {
       },
       removeFilter(removeItem){
         this.workbook.filters = this.workbook.filters.filter(item => item.id != removeItem.id)
+
+      },
+      removePresentation(removeItem){
+        this.workbook.presentations = this.workbook.presentations.filter(item => item.id != removeItem.id)
 
       },
 

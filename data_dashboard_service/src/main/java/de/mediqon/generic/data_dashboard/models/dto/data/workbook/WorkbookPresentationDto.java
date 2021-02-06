@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookDataViewEntity;
 import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookEntity;
+import de.mediqon.generic.data_dashboard.dataconnection.entities.WorkbookPresentationPropertyEntity;
 import de.mediqon.generic.data_dashboard.entities.base.BaseEntity;
 import de.mediqon.generic.data_dashboard.models.base.BaseDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookPresentationType;
 import io.micronaut.core.annotation.Introspected;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonIgnoreProperties({})
@@ -26,6 +29,8 @@ public class WorkbookPresentationDto extends BaseDto {
     protected Integer status = 1;
 
     private WorkbookDataViewDto dataView;
+
+    private List<WorkbookPresentationPropertyDto> properties = new ArrayList<>();
 
 
     public String getName() {
@@ -68,4 +73,11 @@ public class WorkbookPresentationDto extends BaseDto {
         this.status = status;
     }
 
+    public List<WorkbookPresentationPropertyDto> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<WorkbookPresentationPropertyDto> properties) {
+        this.properties = properties;
+    }
 }

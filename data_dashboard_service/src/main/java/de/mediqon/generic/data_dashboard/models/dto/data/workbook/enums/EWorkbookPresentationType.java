@@ -12,8 +12,8 @@ public enum EWorkbookPresentationType {
     LABEL("Etikette", "label"),
     TABLE("Tabelle", "table"),
     PIE_CHART("Kuchendiagramm", "pie_chart"),
-    BAR_CHART("Balkendiagramm", "pie_chart"),
-    LINE_CHART("Liniendiagramm", "pie_chart"),
+    BAR_CHART("Balkendiagramm", "bar_chart"),
+    LINE_CHART("Liniendiagramm", "line_chart"),
     SLICES_CHART("SCHEIBENDiagramm", "slices_chart");
 
     private final String title;
