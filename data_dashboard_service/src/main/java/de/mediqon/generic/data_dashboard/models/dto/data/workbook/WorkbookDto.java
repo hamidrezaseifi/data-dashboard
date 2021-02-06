@@ -36,6 +36,8 @@ public class WorkbookDto extends BaseDto {
 
     private List<WorkbookFilterDto> filters = new ArrayList<>();
 
+    private List<WorkbookPresentationDto> presentations = new ArrayList<>();
+
     public String getName() {
         return name;
     }
@@ -106,5 +108,13 @@ public class WorkbookDto extends BaseDto {
 
     public void setFilters(List<WorkbookFilterDto> filters) {
         this.filters = filters;
+    }
+
+    public List<WorkbookPresentationDto> getPresentations() {
+        return presentations;
+    }
+
+    public void setPresentations(List<WorkbookPresentationDto> presentations) {
+        this.presentations = presentations;
     }
 }

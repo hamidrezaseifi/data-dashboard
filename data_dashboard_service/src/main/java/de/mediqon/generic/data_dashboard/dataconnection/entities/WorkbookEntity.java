@@ -41,6 +41,10 @@ public class WorkbookEntity extends BaseEntity {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<WorkbookFilterEntity> filters = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "workbook", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<WorkbookPresentationEntity> presentations = new ArrayList<>();
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -119,6 +123,20 @@ public class WorkbookEntity extends BaseEntity {
     public void addFilter(WorkbookFilterEntity filter) {
         filter.setWorkbook(this);
         this.filters.add(filter);
+    }
+
+    public List<WorkbookPresentationEntity> getPresentations() {
+        return presentations;
+    }
+
+    public void setPresentations(List<WorkbookPresentationEntity> presentations) {
+        this.presentations = presentations;
+        this.presentations.forEach(f -> f.setWorkbook(this));
+    }
+
+    public void addPresentation(WorkbookPresentationEntity presentation) {
+        presentation.setWorkbook(this);
+        this.presentations.add(presentation);
     }
 
     public void setCreatedAt(Date createdAt) {

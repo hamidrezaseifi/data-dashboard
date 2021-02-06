@@ -14,6 +14,7 @@ import de.mediqon.generic.data_dashboard.models.dto.data.ColumnDetails;
 import de.mediqon.generic.data_dashboard.models.dto.data.ConnectionPropertiesDto;
 import de.mediqon.generic.data_dashboard.models.dto.data.QueryColumnRequest;
 import de.mediqon.generic.data_dashboard.models.dto.data.workbook.WorkbookDto;
+import de.mediqon.generic.data_dashboard.models.dto.data.workbook.enums.EWorkbookPresentationType;
 import de.mediqon.generic.data_dashboard.services.ICustomerService;
 import de.mediqon.generic.data_dashboard.services.data.IConnectionPropertiesService;
 import de.mediqon.generic.data_dashboard.services.data.IWorkbookService;
@@ -187,6 +188,8 @@ public class WorkbookController {
         map.put("workbook", workbookDto);
         map.put("connections", getConnectionDtoList());
         map.put("customers", getAllCustomers());
+        map.put("presentationType", EWorkbookPresentationType.getList());
+
 
         return map;
 
