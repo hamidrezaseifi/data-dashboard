@@ -32,6 +32,10 @@ public class WorkbookPresentationDto extends BaseDto {
 
     private UUID dataSourceId;
 
+    protected Integer rowIndex;
+
+    protected Integer columnIndex;
+
     protected Integer status = 1;
 
     private List<WorkbookPresentationPropertyDto> properties = new ArrayList<>();
@@ -77,6 +81,22 @@ public class WorkbookPresentationDto extends BaseDto {
 
     public void setDataSourceId(UUID dataSourceId) {
         this.dataSourceId = dataSourceId;
+    }
+
+    public Integer getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public Integer getColumnIndex() {
+        return columnIndex;
+    }
+
+    public void setColumnIndex(Integer columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public Integer getStatus() {

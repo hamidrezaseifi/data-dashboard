@@ -21,6 +21,9 @@
           <div class="presentation-form-group">
               <label class="presentation-item-title">Präsentationsstil</label> <span>{{getPresentationItem.presentationStyle}}</span>
           </div>
+          <div class="filter-form-group">
+              <label class="filter-item-title">Raum</label> <span>Spalte: {{getPresentationItem.columnIndex + 1}} Reihe:{{getPresentationItem.rowIndex + 1}}</span>
+          </div>
           <div class="presentation-form-group">
               <div v-for="item in getPresentationItem.properties" :key="item.name" class="presentation-property">
                   <label class="presentation-item-title">{{item.name}}</label>

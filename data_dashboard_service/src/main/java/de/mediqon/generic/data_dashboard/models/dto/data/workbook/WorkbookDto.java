@@ -22,6 +22,10 @@ public class WorkbookDto extends BaseDto {
 
     private String name;
 
+    private Integer columns;
+
+    private Integer rows;
+
     private String description;
 
     protected Integer status = 1;
@@ -44,6 +48,22 @@ public class WorkbookDto extends BaseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getColumns() {
+        return columns;
+    }
+
+    public void setColumns(Integer columns) {
+        this.columns = columns;
+    }
+
+    public Integer getRows() {
+        return rows;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
     }
 
     public String getDescription() {

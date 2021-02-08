@@ -50,6 +50,18 @@
                       <option v-for="item in presentationStyles" :key="item" v-bind:value="item">{{item}}</option>
                   </select>
               </div>
+              <div class="form-group" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
+                  <h6>Raum</h6>
+                  <br>
+                  <label for="columnindexinput" class="label-view-oneline">Spalte</label>
+                  <select class="form-control control-view-oneline" id="columnindexinput" v-model="presentation.columnIndex">
+                      <option v-for="index in workbookColumns" :key="index" v-bind:value="index - 1">{{index}}</option>
+                  </select>
+                  <label for="rowindexinput" class="label-view-oneline">Reihe</label>
+                  <select class="form-control control-view-oneline" id="rowindexinput" v-model="presentation.rowIndex">
+                      <option v-for="index in workbookRows" :key="index" v-bind:value="index - 1">{{index}}</option>
+                  </select>
+              </div>
 
               <div class="form-group" style="height: calc(100% - 300px);" v-if="(presentation.presentationType==='label') && isDataViewSelected">
                   <label for="presentationTypeLabelText" class="item-title">Etiket-Text</label>
@@ -166,19 +178,19 @@ export default {
           errmessage: "",
           okmessage: "",
           selectedDataView: false,
-          presentation:  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": []},
+          presentation:  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": [], "columnIndex": 0, "rowIndex": 0},
           currentUpdateDateTime: new Date(),
           presentationLabelText : ""
         }
     },
-    props:["dataViews", "filters", "isDialogVisible", "presentationTypes", "presentationStyles", "dataSourceTypes"],
+    props:["dataViews", "filters", "isDialogVisible", "presentationTypes", "presentationStyles", "dataSourceTypes", "workbookColumns", "workbookRows"],
     watch: {
       isDialogVisible: {
         immediate: true,
         handler (val, oldVal) {
 
           if(val && !oldVal){
-            this.presentation =  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": []}
+            this.presentation =  {"id": uuidv4(), "name": "", "dataSourceType": "", "dataSourceId": false, "presentationType": "", "presentationStyle": "", "properties": [], "columnIndex": 0, "rowIndex": 0}
           }
         }
       }

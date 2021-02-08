@@ -21,6 +21,9 @@
           <div class="filter-form-group">
               <label class="filter-item-title">Filter-Schlüssel</label> <span>{{getWorkbookFilterItem.filterKey}}</span>
           </div>
+          <div class="filter-form-group">
+              <label class="filter-item-title">Raum</label> <span>Spalte: {{getWorkbookFilterItem.columnIndex + 1}} Reihe:{{getWorkbookFilterItem.rowIndex + 1}}</span>
+          </div>
 
       </div>
 

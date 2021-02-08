@@ -43,6 +43,8 @@ public class WorkbookPresentationAdapter
         model.setProperties(workbookPresentationPropertyAdapter.fromDtoList(dto.getProperties()));
         model.setDataSourceType(dto.getDataSourceType().getId());
         model.setDataSourceId(dto.getDataSourceId());
+        model.setRowIndex(dto.getRowIndex());
+        model.setColumnIndex(dto.getColumnIndex());
         model.setFilters(workbookFilterAdapter.fromDtoList(dto.getFilters()));
 
         return model;
@@ -61,6 +63,8 @@ public class WorkbookPresentationAdapter
         dto.setProperties(workbookPresentationPropertyAdapter.toDtoList(model.getProperties()));
         dto.setDataSourceType(EWorkbookDataSourceType.fromId(model.getDataSourceType()));
         dto.setDataSourceId(model.getDataSourceId());
+        dto.setRowIndex(model.getRowIndex());
+        dto.setColumnIndex(model.getColumnIndex());
         dto.setFilters(workbookFilterAdapter.toDtoList(model.getFilters()));
 
         return dto;

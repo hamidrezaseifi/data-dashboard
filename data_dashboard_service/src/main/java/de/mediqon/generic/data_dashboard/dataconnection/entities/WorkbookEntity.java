@@ -17,6 +17,12 @@ public class WorkbookEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "columns")
+    private Integer columns = 2;
+
+    @Column(name = "rows")
+    private Integer rows = 2;
+
     @Column(name = "description")
     private String description;
 
@@ -65,6 +71,22 @@ public class WorkbookEntity extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getColumns() {
+        return columns;
+    }
+
+    public void setColumns(Integer columns) {
+        this.columns = columns;
+    }
+
+    public Integer getRows() {
+        return rows;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
     }
 
     public Integer getStatus() {

@@ -29,6 +29,12 @@ public class WorkbookPresentationEntity extends BaseEntity {
     @Column(name = "data_source_id")
     private UUID dataSourceId;
 
+    @Column(name = "row_index")
+    protected Integer rowIndex = 1;
+
+    @Column(name = "column_index")
+    protected Integer columnIndex = 1;
+
     @Column(name = "status")
     protected Integer status = 1;
 
@@ -101,6 +107,22 @@ public class WorkbookPresentationEntity extends BaseEntity {
 
     public void setWorkbook(WorkbookEntity workbook) {
         this.workbook = workbook;
+    }
+
+    public Integer getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public Integer getColumnIndex() {
+        return columnIndex;
+    }
+
+    public void setColumnIndex(Integer columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public Integer getStatus() {

@@ -36,6 +36,8 @@ public class WorkbookFilterAdapter
         model.setDataView(workbookDataViewRepository.getById(dto.getDataView().getId()).get());
         model.setFilterType(dto.getFilterType());
         model.setFilterKey(dto.getFilterKey());
+        model.setRowIndex(dto.getRowIndex());
+        model.setColumnIndex(dto.getColumnIndex());
 
         return model;
     }
@@ -51,6 +53,8 @@ public class WorkbookFilterAdapter
         dto.setDataView(workbookDataViewAdapter.toDto(model.getDataView()));
         dto.setFilterType(model.getFilterType());
         dto.setFilterKey(model.getFilterKey());
+        dto.setRowIndex(model.getRowIndex());
+        dto.setColumnIndex(model.getColumnIndex());
 
         return dto;
     }

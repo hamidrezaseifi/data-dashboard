@@ -6,16 +6,20 @@
 
         <b>{{pageTitle}}</b>
 
-        <router-link class="toolbar-item" to="/data/settings/workbook/list"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
+          <router-link class="toolbar-item" to="/data/settings/workbook/list"><img src="@/assets/images/card-list.svg" width="20" /></router-link>
+          <button class="toolbar-item"><img src="@/assets/images/preview.png" width="20" /></button>
       </div>
       <div class="card-body">
 
         <form id="newconnectionform" @submit.prevent="handleSaveData">
 
           <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" id="generaltab" data-toggle="tab" href="#generaltabcontent" role="tab" aria-controls="home" aria-selected="true">Info</a>
-            </li>
+              <li class="nav-item">
+                  <a class="nav-link active" id="generaltab" data-toggle="tab" href="#generaltabcontent" role="tab" aria-controls="home" aria-selected="true">Info</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" id="viewtab" data-toggle="tab" href="#viewtabcontent" role="tab" aria-controls="view" aria-selected="true">Ansicht</a>
+              </li>
             <li class="nav-item">
                 <a class="nav-link" id="datasourcestab" v-bind:class="{disabled: isDataSourceTabDisabled}" data-toggle="tab" href="#datasourcestabcontent" role="tab" aria-selected="true">Datenquelle</a>
             </li>
@@ -53,6 +57,19 @@
 
                   </div>
 
+              </div>
+              <div class="tab-pane fade tabs-content" id="viewtabcontent" role="tabpanel" aria-labelledby="viewtab">
+                  <div class="form-group">
+                      <h5>Workbook Ansicht</h5>
+                  </div>
+                  <div class="form-group" v-if="workbook.customerId" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
+                      <h6>Raum</h6>
+                      <br>
+                      <label for="columnsinput" class="label-view-oneline">Spalten</label>
+                      <input class="form-control control-view-oneline" type="number" id="columnsinput" placeholder="" name="name" v-model="workbook.columns">
+                      <label for="rowsinput" class="label-view-oneline">Reihen</label>
+                      <input class="form-control control-view-oneline" type="number" id="rowsinput" placeholder="" name="name" v-model="workbook.rows">
+                  </div>
               </div>
               <div class="tab-pane fade tabs-content" id="datasourcestabcontent" role="tabpanel" aria-labelledby="datasourcestab">
                   <div class="datasource-toolbar">
@@ -113,12 +130,14 @@
     </DataViewSelectDialog>
 
     <FilterSelectDialog v-bind:isDialogVisible="getSelectFilterDialogVisible" v-on:close="closeSelectFilterDialog"
-                      v-on:filterSelected="addFilter" v-bind:dataViews="getDataViews"></FilterSelectDialog>
+                      v-on:filterSelected="addFilter" v-bind:dataViews="getDataViews"
+                      v-bind:workbookColumns="getWorkbookColumns"  v-bind:workbookRows="getWorkbookRows"></FilterSelectDialog>
 
     <PresentationSelectDialog v-bind:isDialogVisible="getSelectPresentationDialogVisible" v-on:close="closeSelectPresentationDialog"
                       v-on:presentationSelected="addPresentation" v-bind:dataViews="getDataViews"
                       v-bind:presentationTypes="getPresentationTypes" v-bind:presentationStyles="getPresentationStyles"
-                      v-bind:filters="getWorkbookFilters" v-bind:dataSourceTypes="getDataSourceTypes"></PresentationSelectDialog>
+                      v-bind:filters="getWorkbookFilters" v-bind:dataSourceTypes="getDataSourceTypes"
+                      v-bind:workbookColumns="getWorkbookColumns"  v-bind:workbookRows="getWorkbookRows"></PresentationSelectDialog>
 
 
 
@@ -160,12 +179,30 @@ input.form-control , select.form-control {
     margin: 0 10px;
 }
 
+.newworkbook .card-header button.toolbar-item{
+    margin: 0 10px;
+    border: 0;
+    background: transparent;
+}
+
 .add-source-button{
 
 }
 .datasource-toolbar{
     background-color: #efefef;
 }
+
+.label-view-oneline{
+
+    width: 60px;
+    margin-left: 30px;
+}
+
+.control-view-oneline{
+
+    width: 80px !important;
+}
+
 </style>
 <script>
 //import { dataSettingsService } from '../../../../services/datasettings.service';
@@ -199,7 +236,7 @@ export default {
           presentationTypes:[],
           presentationStyles:[],
           dataSourceTypes: [],
-          workbook: {"customerId": false, "dataSources": [], "dataViews": [], "filters":[], "presentations":[], "description": "", "id": false, "name" : false, }
+          workbook: {"customerId": false, "dataSources": [], "dataViews": [], "filters":[], "presentations":[], "description": "", "id": false, "name" : false, "columns": 2, "rows": 2 }
         }
     },
     components:{
@@ -293,6 +330,14 @@ export default {
       getPresentationStyles: function (){
         this.currentUpdateDateTime
         return this.presentationStyles
+      },
+      getWorkbookColumns: function (){
+        this.currentUpdateDateTime
+        return this.workbook.columns
+      },
+      getWorkbookRows: function (){
+        this.currentUpdateDateTime
+        return this.workbook.rows
       },
       getDataSourceTypes: function (){
         this.currentUpdateDateTime

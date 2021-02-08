@@ -32,6 +32,18 @@
                       <option value="TABEL">Tabelle</option>
                   </select>
               </div>
+              <div class="form-group" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
+                  <h6>Raum</h6>
+                  <br>
+                  <label for="columnindexinput" class="label-view-oneline">Spalte</label>
+                  <select class="form-control control-view-oneline" id="columnindexinput" v-model="filter.columnIndex">
+                      <option v-for="index in workbookColumns" :key="index" v-bind:value="index - 1">{{index}}</option>
+                  </select>
+                  <label for="rowindexinput" class="label-view-oneline">Reihe</label>
+                  <select class="form-control control-view-oneline" id="rowindexinput" v-model="filter.rowIndex">
+                      <option v-for="index in workbookRows" :key="index" v-bind:value="index - 1">{{index}}</option>
+                  </select>
+              </div>
               <div class="form-group" v-if="isDataViewSelected">
                   <label for="filterkeyselect" class="item-title">Filter-Schlüssel</label>
                   <select id="filterkeyselect" class="form-control" v-model="filter.filterKey">
@@ -110,18 +122,19 @@ export default {
         return {
           errmessage: "",
           okmessage: "",
-          filter:  {"id": uuidv4(), "name": "", "dataView": false, "dataViewName" : "", "filterType": "LIST", "filterKey": false},
+          totalColumns: 2,
+          filter:  {"id": uuidv4(), "name": "", "dataView": false, "dataViewName" : "", "filterType": "LIST", "filterKey": false, "columnIndex": 0, "rowIndex": 0},
           currentUpdateDateTime: new Date()
         }
     },
-    props:["dataViews", "isDialogVisible"],
+    props:["dataViews", "isDialogVisible", "workbookColumns", "workbookRows"],
     watch: {
       isDialogVisible: {
         immediate: true,
         handler (val, oldVal) {
 
           if(val && !oldVal){
-            this.filter =  {"id": uuidv4(), "name": "", "dataView": false, "dataViewName" : "", "filterType": "LIST", "filterKey": false}
+            this.filter =  {"id": uuidv4(), "name": "", "dataView": false, "dataViewName" : "", "filterType": "LIST", "filterKey": false, "columnIndex": 0, "rowIndex": 0}
           }
         }
       }

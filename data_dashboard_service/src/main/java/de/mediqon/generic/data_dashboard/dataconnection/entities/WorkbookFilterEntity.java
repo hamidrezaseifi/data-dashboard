@@ -22,6 +22,12 @@ public class WorkbookFilterEntity extends BaseEntity {
     @Column(name = "filter_key")
     private String filterKey;
 
+    @Column(name = "row_index")
+    protected Integer rowIndex = 1;
+
+    @Column(name = "column_index")
+    protected Integer columnIndex = 1;
+
     @Column(name = "status")
     protected Integer status = 1;
 
@@ -70,6 +76,22 @@ public class WorkbookFilterEntity extends BaseEntity {
 
     public void setDataView(WorkbookDataViewEntity dataView) {
         this.dataView = dataView;
+    }
+
+    public Integer getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public Integer getColumnIndex() {
+        return columnIndex;
+    }
+
+    public void setColumnIndex(Integer columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public Integer getStatus() {

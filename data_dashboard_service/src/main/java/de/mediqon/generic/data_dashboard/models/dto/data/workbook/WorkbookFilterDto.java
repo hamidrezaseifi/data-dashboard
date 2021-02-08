@@ -23,6 +23,10 @@ public class WorkbookFilterDto extends BaseDto {
 
     private String filterKey;
 
+    protected Integer rowIndex;
+
+    protected Integer columnIndex;
+
     protected Integer status = 1;
 
     private WorkbookDataViewDto dataView;
@@ -50,6 +54,22 @@ public class WorkbookFilterDto extends BaseDto {
 
     public void setFilterKey(String filterKey) {
         this.filterKey = filterKey;
+    }
+
+    public Integer getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public Integer getColumnIndex() {
+        return columnIndex;
+    }
+
+    public void setColumnIndex(Integer columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public Integer getStatus() {
