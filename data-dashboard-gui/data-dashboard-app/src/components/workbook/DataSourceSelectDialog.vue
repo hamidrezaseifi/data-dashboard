@@ -213,7 +213,7 @@ import { dataSettingsService } from '../../services/datasettings.service';
 import { uuidv4 } from '../../helpers/utils';
 
 export default {
-    name: 'NewConnection',
+    name: 'SelectDataSourceDialog',
     data () {
         return {
           tableList:[],

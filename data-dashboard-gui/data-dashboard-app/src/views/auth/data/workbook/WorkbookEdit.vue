@@ -59,16 +59,26 @@
 
               </div>
               <div class="tab-pane fade tabs-content" id="viewtabcontent" role="tabpanel" aria-labelledby="viewtab">
-                  <div class="form-group">
-                      <h5>Workbook Ansicht</h5>
-                  </div>
-                  <div class="form-group" v-if="workbook.customerId" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px;">
-                      <h6>Raum</h6>
-                      <br>
-                      <label for="columnsinput" class="label-view-oneline">Spalten</label>
-                      <input class="form-control control-view-oneline" type="number" id="columnsinput" placeholder="" name="name" v-model="workbook.columns">
-                      <label for="rowsinput" class="label-view-oneline">Reihen</label>
-                      <input class="form-control control-view-oneline" type="number" id="rowsinput" placeholder="" name="name" v-model="workbook.rows">
+
+                  <div class="form-group" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px; margin-top: 10px;">
+
+                      <label for="columnsinput" class="label-view-oneline-area">Spalten</label>
+                      <select class="form-control control-view-oneline-area" id="columnsinput" v-model="workbook.columns">
+                          <option v-for="val in 20" :key="val" v-bind_value="val">{{val}}</option>
+                      </select>
+                      <label for="rowsinput" class="label-view-oneline-area">Reihen</label>
+                      <select class="form-control control-view-oneline-area" id="rowsinput" v-model="workbook.rows">
+                          <option v-for="val in 20" :key="val" v-bind_value="val">{{val}}</option>
+                      </select>
+                      <div class="form-group" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px; margin-top: 10px;">
+
+                          <VueSplitPane>
+                              <section slot="left">Left Pane</section>
+                              <section slot="right">Right Pane</section>
+                          </VueSplitPane>
+
+                      </div>
+
                   </div>
               </div>
               <div class="tab-pane fade tabs-content" id="datasourcestabcontent" role="tabpanel" aria-labelledby="datasourcestab">
@@ -146,6 +156,17 @@
 
 <style>
 
+@import 'vue-split-pane/dist/vue-split-pane.esm.css';
+
+.splitpanes__pane {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 5em;
+}
+
 .actionbutton{
   margin-left: 10px;
   width: 120px;
@@ -192,15 +213,18 @@ input.form-control , select.form-control {
     background-color: #efefef;
 }
 
-.label-view-oneline{
+.label-view-oneline-area{
 
     width: 60px;
     margin-left: 30px;
+    font-size: 12px;
 }
 
-.control-view-oneline{
-
-    width: 80px !important;
+.control-view-oneline-area{
+    padding: 0px 2px !important;
+    font-size: 12px !important;
+    width: 50px !important;
+    height: 26px !important;
 }
 
 </style>
@@ -215,12 +239,13 @@ import FilterSelectDialog from '../../../../components/workbook/FilterSelectDial
 import WorkbookFilterItem from '../../../../components/workbook/WorkbookFilterItem.vue';
 import PresentationSelectDialog from '../../../../components/workbook/PresentationSelectDialog.vue';
 import WorkbookPresentationItem from '../../../../components/workbook/WorkbookPresentationItem.vue';
+import VueSplitPane from 'vue-split-pane';
 
 //import router from '../../../../router'
 import $ from 'jquery'
 
 export default {
-    name: 'NewConnection',
+    name: 'WorkbookEdit',
     data () {
         return {
           connections:[],
@@ -240,6 +265,7 @@ export default {
         }
     },
     components:{
+        VueSplitPane,
         DataSourceSelectDialog,
         WorkbookDataSourceItem,
         DataViewSelectDialog,

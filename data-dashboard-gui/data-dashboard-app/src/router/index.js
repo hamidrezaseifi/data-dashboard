@@ -43,13 +43,13 @@ const routes = [
   },
   {
     path: '/data/settings/connections/clone/:id',
-    name: 'DataSourceEdit',
+    name: 'DataSourceClone',
     component: DataSourceEdit,
     props: { clone: true }
   },
   {
     path: '/data/settings/connections/new',
-    name: 'DataSourceEdit',
+    name: 'DataSourceNew',
     component: DataSourceEdit
   },
   {
@@ -59,7 +59,7 @@ const routes = [
   },
   {
      path: '/data/settings/workbook/new',
-     name: 'WorkbookEdit',
+     name: 'WorkbookNew',
      component: WorkbookEdit
   },
   {
@@ -79,7 +79,7 @@ const routes = [
   },
   {
    path: '/newcustomer',
-   name: 'EditCustomer',
+   name: 'NewCustomer',
    component: EditCustomer
   },
   {
