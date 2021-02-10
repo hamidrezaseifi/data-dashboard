@@ -70,12 +70,26 @@
                       <select class="form-control control-view-oneline-area" id="rowsinput" v-model="workbook.rows">
                           <option v-for="val in 20" :key="val" v-bind_value="val">{{val}}</option>
                       </select>
+
                       <div class="form-group" style="border: 1px solid #dee2e6; padding: 10px; border-radius: 4px; margin-top: 10px;">
 
-                          <VueSplitPane>
-                              <section slot="left">Left Pane</section>
-                              <section slot="right">Right Pane</section>
-                          </VueSplitPane>
+                          <div style="height: 400px ; color: black; width: 100%">
+                              <div v-for="r in rowCount" :key="r" v-bind:style="{ height: (100 / rowCount) + '%'}">
+                                  <div style="height: calc(100% - 7px)">
+                                      <div v-for="c in columnCount" :key="c" v-bind:style="{ width: (100 / columnCount) + '%', clear: c == 1? 'both' : 'none' }"
+                                           style="float: left; height: calc(100%);">
+                                          <div style="border: 1px solid gray; text-align: center; float: left; height: calc(100%); width: calc(100% - 7px)">
+                                              {{r}} : {{c}}
+                                          </div>
+                                          <div style="border: 1px solid gray; text-align: center; float: left; height: calc(100%); width: 7px; background: #eaeaea; cursor: col-resize;"></div>
+                                      </div>
+
+
+                                  </div>
+                                  <div style="border: 1px solid gray; text-align: center; float: left; height: 7px; width: calc(100%); background: #eaeaea; cursor: row-resize;"></div>
+                              </div>
+
+                          </div>
 
                       </div>
 
@@ -156,17 +170,6 @@
 
 <style>
 
-@import 'vue-split-pane/dist/vue-split-pane.esm.css';
-
-.splitpanes__pane {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Helvetica, Arial, sans-serif;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 5em;
-}
-
 .actionbutton{
   margin-left: 10px;
   width: 120px;
@@ -239,7 +242,10 @@ import FilterSelectDialog from '../../../../components/workbook/FilterSelectDial
 import WorkbookFilterItem from '../../../../components/workbook/WorkbookFilterItem.vue';
 import PresentationSelectDialog from '../../../../components/workbook/PresentationSelectDialog.vue';
 import WorkbookPresentationItem from '../../../../components/workbook/WorkbookPresentationItem.vue';
-import VueSplitPane from 'vue-split-pane';
+
+//import { Splitpanes, Pane } from 'splitpanes'
+//import 'splitpanes/dist/splitpanes.css'
+
 
 //import router from '../../../../router'
 import $ from 'jquery'
@@ -265,7 +271,8 @@ export default {
         }
     },
     components:{
-        VueSplitPane,
+        //Splitpanes,
+        //Pane,
         DataSourceSelectDialog,
         WorkbookDataSourceItem,
         DataViewSelectDialog,
@@ -282,10 +289,17 @@ export default {
 
           return this.$store.state.authentication.loginData.customer.id
         }
-
       },
       pageTitle: function (){
         return this.isNew() ? "Neu Workbook" : "Workbook " + this.workbook.name + " bearbeiten"
+      },
+      columnCount: function (){
+        console.log("columnCount" , this.workbook.columns)
+        return this.workbook.columns * 1
+      },
+      rowCount: function (){
+        console.log("rowCount" , this.workbook.rows)
+        return this.workbook.rows * 1
       },
       saveButtonName: function (){
         return this.isNew() ? "Erstellen" : "Speiren"
